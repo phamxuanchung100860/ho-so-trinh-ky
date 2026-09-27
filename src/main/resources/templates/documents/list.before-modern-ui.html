@@ -1,0 +1,1196 @@
+﻿<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Danh sách hồ sơ')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <div class="app-content">
+            <div class="container-fluid py-3">
+
+                <!-- =====================================================
+                     PAGE HEADER
+                ====================================================== -->
+                <div class="document-page-header">
+
+                    <div>
+                        <h1 class="document-page-title">
+                            Danh sách hồ sơ
+                        </h1>
+
+                        <p class="document-page-subtitle">
+                            Quản lý, tra cứu và theo dõi trạng thái tất cả hồ sơ
+                        </p>
+                    </div>
+
+                    <div class="document-page-actions">
+
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                onclick="exportExcel()">
+
+                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            Xuất Excel
+
+                        </button>
+
+                        <a th:href="@{/documents/new}"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-plus-lg me-1"></i>
+                            Tạo hồ sơ mới
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                     FILTER
+                ====================================================== -->
+                <div class="document-filter-card">
+
+                    <div class="document-filter-grid">
+
+                        <!-- KEYWORD -->
+                        <div class="document-filter-field">
+
+                            <label class="document-filter-label">
+                                Tìm kiếm
+                            </label>
+
+                            <div class="document-search-box">
+
+                                <i class="bi bi-search"></i>
+
+                                <input type="text"
+                                       id="keyword"
+                                       class="form-control"
+                                       placeholder="Mã hồ sơ, tên hồ sơ, người tạo...">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS -->
+                        <div class="document-filter-field">
+
+                            <label class="document-filter-label">
+                                Trạng thái
+                            </label>
+
+                            <select id="statusFilter"
+                                    class="form-select">
+
+                                <option value="">Tất cả trạng thái</option>
+
+                                <option value="DRAFT">Nháp</option>
+                                <option value="WAITING_SIGN">Chờ ký</option>
+                                <option value="SIGNING">Đang xử lý</option>
+                                <option value="SIGNED">Đã ký</option>
+                                <option value="COMPLETED">Hoàn tất</option>
+                                <option value="REJECTED">Từ chối</option>
+                                <option value="RETURNED">Trả lại</option>
+                                <option value="CANCELLED">Đã hủy</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CREATOR -->
+                        <div class="document-filter-field">
+
+                            <label class="document-filter-label">
+                                Người lập
+                            </label>
+
+                            <select id="creatorFilter"
+                                    class="form-select">
+
+                                <option value="">Tất cả người lập</option>
+
+                                <option th:each="d : ${documents}"
+                                        th:value="${d.createdBy.fullName}"
+                                        th:text="${d.createdBy.fullName}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- FROM DATE -->
+                        <div class="document-filter-field">
+
+                            <label class="document-filter-label">
+                                Từ ngày
+                            </label>
+
+                            <input type="date"
+                                   id="fromDate"
+                                   class="form-control">
+
+                        </div>
+
+
+                        <!-- TO DATE -->
+                        <div class="document-filter-field">
+
+                            <label class="document-filter-label">
+                                Đến ngày
+                            </label>
+
+                            <input type="date"
+                                   id="toDate"
+                                   class="form-control">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="document-filter-actions mt-3">
+
+                        <button type="button"
+                                class="btn btn-primary"
+                                onclick="applyFilters()">
+
+                            <i class="bi bi-search me-1"></i>
+                            Tìm kiếm
+
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                onclick="resetFilters()">
+
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Đặt lại
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                     SUMMARY
+                ====================================================== -->
+                <div class="document-list-summary">
+
+                    <div class="document-list-count">
+
+                        Có
+                        <strong id="totalDocuments">0</strong>
+                        hồ sơ phù hợp
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                     TABLE
+                ====================================================== -->
+                <div class="document-table-card">
+
+                    <div class="document-table-wrapper">
+
+                        <table class="document-table"
+                               id="documentTable">
+
+                            <thead>
+
+                            <tr>
+
+                                <th style="width:55px;">
+                                    STT
+                                </th>
+
+                                <th>
+                                    Mã hồ sơ
+                                </th>
+
+                                <th>
+                                    Hồ sơ
+                                </th>
+
+                                <th>
+                                    Người tạo
+                                </th>
+
+                                <th>
+                                    Ngày tạo
+                                </th>
+
+                                <th>
+                                    Người xử lý
+                                </th>
+
+                                <th>
+                                    Trạng thái
+                                </th>
+
+                                <th>
+                                    Hạn xử lý
+                                </th>
+
+                                <th style="width:150px;text-align:right;">
+                                    Thao tác
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <tr th:each="d,st : ${documents}"
+                                class="document-row"
+
+                                th:attr="
+                                    data-code=${d.documentCode},
+                                    data-title=${d.title},
+                                    data-status=${d.status.name()},
+                                    data-creator=${d.createdBy.fullName},
+                                    data-created=${#temporals.format(d.createdAt,'yyyy-MM-dd')}
+                                ">
+
+                                <!-- STT -->
+                                <td class="text-center">
+
+                                    <span class="row-number fw-bold text-muted">
+                                        1
+                                    </span>
+
+                                </td>
+
+
+                                <!-- CODE -->
+                                <td>
+
+                                    <span class="document-code"
+                                          th:text="${d.documentCode}">
+                                        HS20260915001
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DOCUMENT -->
+                                <td>
+
+                                    <div class="document-info">
+
+                                        <div class="document-file-icon">
+
+                                            <i class="bi bi-file-earmark-text"></i>
+
+                                        </div>
+
+                                        <div class="document-info-body">
+
+                                            <a class="document-title"
+                                               th:href="@{'/documents/' + ${d.id}}"
+                                               th:text="${d.title}">
+
+                                                Hồ sơ đề nghị phê duyệt
+
+                                            </a>
+
+                                            <div class="document-description"
+                                                 th:if="${d.description != null and !#strings.isEmpty(d.description)}"
+                                                 th:text="${d.description}">
+
+                                                Mô tả hồ sơ
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- CREATOR -->
+                                <td>
+
+                                    <div class="document-creator">
+
+                                        <div class="document-avatar">
+
+                                            <span th:text="${#strings.substring(d.createdBy.fullName,0,1)}">
+                                                N
+                                            </span>
+
+                                        </div>
+
+                                        <div class="document-creator-info">
+
+                                            <div class="document-creator-name"
+                                                 th:text="${d.createdBy.fullName}">
+
+                                                Nguyễn Văn A
+
+                                            </div>
+
+                                            <div class="document-creator-role">
+
+                                                Người lập hồ sơ
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- CREATED -->
+                                <td>
+
+                                    <div class="document-date"
+                                         th:text="${#temporals.format(d.createdAt,'dd/MM/yyyy')}">
+
+                                        20/09/2026
+
+                                    </div>
+
+                                    <span class="document-time"
+                                          th:text="${#temporals.format(d.createdAt,'HH:mm')}">
+
+                                        08:30
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- PROCESSOR -->
+                                <td>
+
+                                    <div class="document-creator">
+
+                                        <div class="document-avatar">
+
+                                            <i class="bi bi-person"></i>
+
+                                        </div>
+
+                                        <div class="document-creator-info">
+
+                                            <div class="document-creator-name processor-name">
+
+                                                Chưa xử lý
+
+                                            </div>
+
+                                            <div class="document-creator-role">
+                                                Người ký hiện tại
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <span th:each="flow : ${d.flows}"
+                                          th:if="${flow.status.name() == 'SIGNING'}"
+                                          class="processor-real d-none"
+                                          th:text="${flow.approver.fullName}">
+                                    </span>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+                                <td>
+
+                                    <span class="document-status-badge"
+                                          th:classappend="${' document-status-' + d.status.name().toLowerCase()}">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        <span th:text="${d.status.label}">
+                                            Chờ ký
+                                        </span>
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DEADLINE -->
+                                <td>
+
+                                    <span th:if="${d.status.name() != 'COMPLETED'
+                                                  and d.status.name() != 'CANCELLED'
+                                                  and d.status.name() != 'REJECTED'}"
+                                          class="document-date"
+                                          th:text="${#temporals.format(d.createdAt.plusDays(2),'dd/MM/yyyy')}">
+
+                                        22/09/2026
+
+                                    </span>
+
+                                    <span th:if="${d.status.name() == 'COMPLETED'
+                                                  or d.status.name() == 'CANCELLED'
+                                                  or d.status.name() == 'REJECTED'}"
+                                          class="text-muted">
+
+                                        —
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ACTION -->
+                                <td>
+
+                                    <div class="document-actions">
+
+                                        <!-- VIEW -->
+                                        <a class="document-action-btn document-action-primary"
+                                           title="Xem hồ sơ"
+                                           th:href="@{'/documents/' + ${d.id}}">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+
+                                        <!-- EDIT -->
+                                        <a th:if="${d.status.name() == 'DRAFT'
+                                                   or d.status.name() == 'RETURNED'}"
+                                           class="document-action-btn"
+                                           title="Chỉnh sửa"
+                                           th:href="@{'/documents/' + ${d.id} + '/wizard?step=1'}">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <!-- SIGN -->
+                                        <a th:if="${d.status.name() == 'SIGNING'}"
+                                           class="document-action-btn"
+                                           title="Xử lý ký"
+                                           th:href="@{'/documents/' + ${d.id} + '/sign'}">
+
+                                            <i class="bi bi-pen"></i>
+
+                                        </a>
+
+
+                                        <!-- PRINT -->
+                                        <a class="document-action-btn"
+                                           title="In hồ sơ"
+                                           target="_blank"
+                                           th:href="@{'/documents/' + ${d.id} + '/print'}">
+
+                                            <i class="bi bi-printer"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- EMPTY -->
+                            <tr id="emptyRow"
+                                th:if="${#lists.isEmpty(documents)}">
+
+                                <td colspan="9">
+
+                                    <div class="document-empty">
+
+                                        <div class="document-empty-icon">
+
+                                            <i class="bi bi-folder2-open"></i>
+
+                                        </div>
+
+                                        <div class="document-empty-title">
+                                            Chưa có hồ sơ
+                                        </div>
+
+                                        <div class="document-empty-text">
+                                            Hiện chưa có hồ sơ nào trong hệ thống.
+                                            Hãy tạo hồ sơ mới để bắt đầu quy trình trình ký.
+                                        </div>
+
+                                        <a th:href="@{/documents/new}"
+                                           class="btn btn-primary">
+
+                                            <i class="bi bi-plus-lg me-1"></i>
+                                            Tạo hồ sơ mới
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PAGINATION
+                    ================================================== -->
+                    <div class="document-pagination-wrapper">
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <span class="document-pagination-info">
+                                Hiển thị
+                            </span>
+
+                            <select id="pageSize"
+                                    class="form-select form-select-sm"
+                                    style="width:78px;"
+                                    onchange="changePageSize()">
+
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+
+                            </select>
+
+                            <span class="document-pagination-info">
+                                hồ sơ / trang
+                            </span>
+
+                        </div>
+
+
+                        <div id="pageInfo"
+                             class="document-pagination-info">
+
+                            Hiển thị 0 hồ sơ
+
+                        </div>
+
+
+                        <nav aria-label="Phân trang">
+
+                            <div class="document-pagination"
+                                 id="pagination">
+                            </div>
+
+                        </nav>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        Phần mềm quản lý và trình ký hồ sơ
+    </footer>
+
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</div>
+
+
+<script>
+
+/* ============================================================
+   DOCUMENT LIST V3
+   ============================================================ */
+
+let currentPage = 1;
+let pageSize = 10;
+
+
+/* ============================================================
+   GET ROWS
+   ============================================================ */
+
+function getRows() {
+
+    return Array.from(
+        document.querySelectorAll(
+            "#documentTable tbody tr.document-row"
+        )
+    );
+
+}
+
+
+/* ============================================================
+   DOCUMENT TYPE
+   ============================================================ */
+
+function getDocumentType(title) {
+
+    const text = (title || "").toLowerCase();
+
+    if (
+        text.includes("mua") ||
+        text.includes("thiết bị") ||
+        text.includes("mua sắm")
+    ) {
+        return "Mua sắm";
+    }
+
+    if (
+        text.includes("kế hoạch") ||
+        text.includes("đào tạo") ||
+        text.includes("truyền thông")
+    ) {
+        return "Kế hoạch";
+    }
+
+    if (
+        text.includes("ngân sách") ||
+        text.includes("tài chính") ||
+        text.includes("thanh toán")
+    ) {
+        return "Tài chính";
+    }
+
+    if (
+        text.includes("báo cáo") ||
+        text.includes("kết quả")
+    ) {
+        return "Báo cáo";
+    }
+
+    if (
+        text.includes("nhân sự") ||
+        text.includes("công tác") ||
+        text.includes("khen thưởng")
+    ) {
+        return "Nhân sự";
+    }
+
+    return "Hồ sơ";
+}
+
+
+/* ============================================================
+   PREPARE ROWS
+   ============================================================ */
+
+function prepareRows() {
+
+    getRows().forEach(row => {
+
+        const title =
+            row.getAttribute("data-title") || "";
+
+        row.setAttribute(
+            "data-type",
+            getDocumentType(title)
+        );
+
+
+        const realProcessor =
+            row.querySelector(".processor-real");
+
+        const processorName =
+            row.querySelector(".processor-name");
+
+        if (realProcessor && processorName) {
+
+            const processor =
+                realProcessor.textContent.trim();
+
+            if (processor) {
+
+                processorName.textContent =
+                    processor;
+
+                processorName.classList.remove(
+                    "text-muted"
+                );
+
+                row.setAttribute(
+                    "data-processor",
+                    processor
+                );
+
+            }
+
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+
+function getFilteredRows() {
+
+    const keyword =
+        document.getElementById("keyword")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const status =
+        document.getElementById("statusFilter").value;
+
+    const creator =
+        document.getElementById("creatorFilter").value;
+
+    const fromDate =
+        document.getElementById("fromDate").value;
+
+    const toDate =
+        document.getElementById("toDate").value;
+
+
+    return getRows().filter(row => {
+
+        const code =
+            (row.getAttribute("data-code") || "")
+                .toLowerCase();
+
+        const title =
+            (row.getAttribute("data-title") || "")
+                .toLowerCase();
+
+        const rowCreator =
+            row.getAttribute("data-creator") || "";
+
+        const rowStatus =
+            row.getAttribute("data-status") || "";
+
+        const created =
+            row.getAttribute("data-created") || "";
+
+
+        const matchKeyword =
+            !keyword ||
+            code.includes(keyword) ||
+            title.includes(keyword) ||
+            rowCreator.toLowerCase().includes(keyword);
+
+
+        const matchStatus =
+            !status ||
+            rowStatus === status;
+
+
+        const matchCreator =
+            !creator ||
+            rowCreator === creator;
+
+
+        const matchFromDate =
+            !fromDate ||
+            created >= fromDate;
+
+
+        const matchToDate =
+            !toDate ||
+            created <= toDate;
+
+
+        return (
+            matchKeyword &&
+            matchStatus &&
+            matchCreator &&
+            matchFromDate &&
+            matchToDate
+        );
+
+    });
+
+}
+
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+
+function renderTable() {
+
+    const rows =
+        getRows();
+
+    const filtered =
+        getFilteredRows();
+
+    const total =
+        filtered.length;
+
+
+    document.getElementById(
+        "totalDocuments"
+    ).textContent = total;
+
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(total / pageSize)
+        );
+
+
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+
+
+    const start =
+        (currentPage - 1) * pageSize;
+
+    const end =
+        Math.min(
+            start + pageSize,
+            total
+        );
+
+
+    rows.forEach(row => {
+        row.style.display = "none";
+    });
+
+
+    filtered
+        .slice(start, end)
+        .forEach((row, index) => {
+
+            row.style.display = "";
+
+            const numberCell =
+                row.querySelector(".row-number");
+
+            if (numberCell) {
+
+                numberCell.textContent =
+                    start + index + 1;
+
+            }
+
+        });
+
+
+    const pageInfo =
+        document.getElementById("pageInfo");
+
+
+    if (total === 0) {
+
+        pageInfo.textContent =
+            "Không có hồ sơ phù hợp";
+
+    } else {
+
+        pageInfo.textContent =
+            `Hiển thị ${start + 1}–${end} trong ${total} hồ sơ`;
+
+    }
+
+
+    renderPagination(totalPages);
+
+
+    const emptyRow =
+        document.getElementById("emptyRow");
+
+
+    if (emptyRow) {
+
+        emptyRow.style.display =
+            total === 0 ? "" : "none";
+
+    }
+
+}
+
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+
+function renderPagination(totalPages) {
+
+    const pagination =
+        document.getElementById("pagination");
+
+    pagination.innerHTML = "";
+
+
+    function addPage(
+        label,
+        page,
+        disabled = false,
+        active = false
+    ) {
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+            "document-page-link" +
+            (active ? " active" : "") +
+            (disabled ? " disabled" : "");
+
+        button.innerHTML = label;
+
+
+        if (!disabled) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    currentPage = page;
+
+                    renderTable();
+
+                }
+            );
+
+        }
+
+
+        pagination.appendChild(button);
+
+    }
+
+
+    addPage(
+        '<i class="bi bi-chevron-left"></i>',
+        currentPage - 1,
+        currentPage <= 1
+    );
+
+
+    let start =
+        Math.max(1, currentPage - 2);
+
+    let end =
+        Math.min(totalPages, currentPage + 2);
+
+
+    if (start > 1) {
+
+        addPage(
+            "1",
+            1,
+            false,
+            currentPage === 1
+        );
+
+
+        if (start > 2) {
+
+            addPage("...", 1, true);
+
+        }
+
+    }
+
+
+    for (
+        let page = start;
+        page <= end;
+        page++
+    ) {
+
+        addPage(
+            page,
+            page,
+            false,
+            page === currentPage
+        );
+
+    }
+
+
+    if (end < totalPages) {
+
+        if (end < totalPages - 1) {
+
+            addPage("...", 1, true);
+
+        }
+
+
+        addPage(
+            totalPages,
+            totalPages,
+            false,
+            currentPage === totalPages
+        );
+
+    }
+
+
+    addPage(
+        '<i class="bi bi-chevron-right"></i>',
+        currentPage + 1,
+        currentPage >= totalPages
+    );
+
+}
+
+
+/* ============================================================
+   APPLY FILTER
+   ============================================================ */
+
+function applyFilters() {
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+function resetFilters() {
+
+    document.getElementById("keyword").value = "";
+
+    document.getElementById("statusFilter").value = "";
+
+    document.getElementById("creatorFilter").value = "";
+
+    document.getElementById("fromDate").value = "";
+
+    document.getElementById("toDate").value = "";
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================================
+   PAGE SIZE
+   ============================================================ */
+
+function changePageSize() {
+
+    pageSize =
+        parseInt(
+            document.getElementById("pageSize").value,
+            10
+        );
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================================
+   ENTER TO SEARCH
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const keyword =
+            document.getElementById("keyword");
+
+        if (keyword) {
+
+            keyword.addEventListener(
+                "keydown",
+                function(event) {
+
+                    if (event.key === "Enter") {
+                        applyFilters();
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   EXPORT
+   ============================================================ */
+
+function exportExcel() {
+
+    alert(
+        "Chức năng Xuất Excel sẽ được kết nối ở bước tiếp theo."
+    );
+
+}
+
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        prepareRows();
+
+        renderTable();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,330 @@
+﻿:root {
+    --ui-primary: #2563eb;
+    --ui-primary-dark: #1d4ed8;
+    --ui-bg: #f5f7fb;
+    --ui-card: #ffffff;
+    --ui-border: #e5e7eb;
+    --ui-text: #172033;
+    --ui-muted: #64748b;
+    --ui-radius: 12px;
+    --ui-shadow: 0 2px 10px rgba(15, 23, 42, .05);
+}
+
+.content-wrapper {
+    background: var(--ui-bg) !important;
+}
+
+.content {
+    padding: 20px 24px !important;
+}
+
+.content-header {
+    padding: 0 0 18px !important;
+}
+
+.content-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ui-text);
+}
+
+.card {
+    border: 1px solid var(--ui-border) !important;
+    border-radius: var(--ui-radius) !important;
+    box-shadow: var(--ui-shadow) !important;
+    overflow: hidden;
+}
+
+.card-header {
+    background: #fff !important;
+    border-bottom: 1px solid var(--ui-border) !important;
+    padding: 15px 18px !important;
+}
+
+.card-body {
+    padding: 18px !important;
+}
+
+/* FILTER */
+.document-filter,
+.filter-box,
+.toolbar,
+.table-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px;
+    background: #fff;
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    margin-bottom: 14px;
+}
+
+.document-filter input,
+.filter-box input,
+.toolbar input,
+.table-toolbar input,
+.document-filter select,
+.filter-box select,
+.toolbar select,
+.table-toolbar select {
+    height: 38px;
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+    padding: 0 12px;
+    background: #fff;
+    color: var(--ui-text);
+    font-size: 13px;
+    outline: none;
+}
+
+/* BUTTON */
+.btn {
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.btn-primary {
+    background: var(--ui-primary) !important;
+    border-color: var(--ui-primary) !important;
+}
+
+/* TABLE */
+.table {
+    margin: 0 !important;
+    color: var(--ui-text);
+    font-size: 13px;
+}
+
+.table thead th {
+    background: #f8fafc !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--ui-border) !important;
+    padding: 11px 12px !important;
+}
+
+.table tbody td {
+    padding: 12px !important;
+    vertical-align: middle !important;
+    border-color: #eef1f5 !important;
+}
+
+.table tbody tr {
+    height: 58px;
+    transition: background .15s ease;
+}
+
+.table tbody tr:hover {
+    background: #f8fbff !important;
+}
+
+/* DOCUMENT */
+.document-title {
+    max-width: 360px;
+    font-weight: 600;
+    color: var(--ui-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-code {
+    display: block;
+    margin-top: 3px;
+    color: var(--ui-muted);
+    font-size: 11px;
+}
+
+.document-description {
+    max-width: 360px;
+    margin-top: 3px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11px;
+}
+
+/* USER */
+.user-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8f0ff;
+    color: var(--ui-primary);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.user-name {
+    max-width: 145px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+/* STATUS */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-waiting {
+    color: #b45309;
+    background: #fff7ed;
+}
+
+.status-signing,
+.status-processing {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.status-signed,
+.status-completed {
+    color: #15803d;
+    background: #f0fdf4;
+}
+
+.status-rejected {
+    color: #dc2626;
+    background: #fef2f2;
+}
+
+.status-returned {
+    color: #9333ea;
+    background: #faf5ff;
+}
+
+.status-draft {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+/* ACTION */
+.action-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #fff;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    border-color: #bfdbfe;
+    color: var(--ui-primary);
+    background: #eff6ff;
+}
+
+/* DASHBOARD */
+.dashboard-stat {
+    background: #fff;
+    border: 1px solid var(--ui-border);
+    border-radius: var(--ui-radius);
+    padding: 17px;
+    box-shadow: var(--ui-shadow);
+    height: 100%;
+}
+
+.dashboard-stat .stat-label {
+    color: var(--ui-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dashboard-stat .stat-value {
+    margin-top: 5px;
+    font-size: 27px;
+    line-height: 1.1;
+    font-weight: 750;
+    color: var(--ui-text);
+}
+
+/* SIDEBAR */
+.main-sidebar {
+    box-shadow: 2px 0 10px rgba(15, 23, 42, .08) !important;
+}
+
+.nav-sidebar .nav-link {
+    margin: 2px 8px;
+    border-radius: 8px !important;
+    padding: 9px 12px !important;
+    font-size: 13px;
+}
+
+.nav-sidebar .nav-link.active {
+    font-weight: 600;
+}
+
+/* PAGINATION */
+.pagination {
+    margin: 15px 0 0 !important;
+}
+
+.pagination .page-link {
+    border-radius: 7px !important;
+    margin: 0 2px;
+    font-size: 12px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .content {
+        padding: 15px !important;
+    }
+
+    .document-title,
+    .document-description {
+        max-width: 230px;
+    }
+
+    .user-name {
+        max-width: 110px;
+    }
+}

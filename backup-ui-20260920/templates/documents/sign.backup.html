@@ -1,0 +1,1734 @@
+<!doctype html>
+
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<!-- =========================================================
+     HEAD
+========================================================= -->
+
+<head th:replace="~{fragments/layout :: head('Trình ký - Chi tiết hồ sơ')}">
+</head>
+
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+
+<div class="app-wrapper">
+
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <nav th:replace="~{fragments/layout :: topbar}">
+    </nav>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside th:replace="~{fragments/layout :: sidebar}">
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="app-main">
+
+
+        <div class="app-content">
+
+
+            <div class="container-fluid py-3">
+
+
+                <!-- =================================================
+                     BREADCRUMB + BUTTON
+                ================================================== -->
+
+                <div class="d-flex
+                            justify-content-between
+                            align-items-center
+                            mb-3
+                            flex-wrap
+                            gap-2">
+
+
+                    <div class="small text-muted">
+
+                        <i class="bi bi-file-earmark-check me-1"></i>
+
+                        Trình ký
+
+                        <i class="bi bi-chevron-right mx-1"></i>
+
+                        Chi tiết hồ sơ
+
+                    </div>
+
+
+                    <div class="d-flex gap-2 flex-wrap">
+
+
+                        <a class="btn btn-outline-secondary"
+                           th:href="@{'/documents/' + ${document.id}}">
+
+                            <i class="bi bi-arrow-left me-1"></i>
+
+                            Quay lại
+
+                        </a>
+
+
+                        <a class="btn btn-primary"
+                           th:href="@{'/documents/' + ${document.id} + '/print'}"
+                           target="_blank">
+
+                            <i class="bi bi-printer me-1"></i>
+
+                            In hồ sơ
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     THÔNG TIN HỒ SƠ
+                ================================================== -->
+
+                <div class="card border-0 shadow-sm mb-3">
+
+
+                    <div class="card-body">
+
+
+                        <div class="d-flex
+                                    justify-content-between
+                                    align-items-start
+                                    flex-wrap
+                                    gap-3">
+
+
+                            <div class="flex-grow-1">
+
+
+                                <div class="small text-primary fw-semibold mb-1"
+                                     th:text="${document.documentCode}">
+
+                                    HS-2025-001
+
+                                </div>
+
+
+                                <h3 class="fw-bold mb-2"
+                                    th:text="${document.title}">
+
+                                    Đề nghị mua sắm thiết bị
+
+                                </h3>
+
+
+                                <div class="text-muted small">
+
+
+                                    <span>
+                                        Người lập:
+                                    </span>
+
+
+                                    <strong th:if="${document.createdBy != null}"
+                                            th:text="${document.createdBy.fullName}">
+
+                                        Nguyễn Văn A
+
+                                    </strong>
+
+
+                                    <span th:unless="${document.createdBy != null}">
+
+                                        Không xác định
+
+                                    </span>
+
+
+                                    <span class="mx-2">
+                                        |
+                                    </span>
+
+
+                                    <span>
+                                        Ngày tạo:
+                                    </span>
+
+
+                                    <strong th:if="${document.createdAt != null}"
+                                            th:text="${#temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm')}">
+
+                                        10/06/2025 08:30
+
+                                    </strong>
+
+
+                                    <span th:unless="${document.createdAt != null}">
+
+                                        Không xác định
+
+                                    </span>
+
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- STATUS -->
+
+                            <div>
+
+                                <span class="badge fs-6 px-3 py-2"
+                                      th:if="${document.status != null}"
+                                      th:classappend="${' text-bg-' + document.status.css}"
+                                      th:text="${document.status.label}">
+
+                                    Đang trình ký
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TIẾN TRÌNH TRÌNH KÝ
+                ================================================== -->
+
+                <div class="card border-0 shadow-sm mb-3">
+
+
+                    <div class="card-header bg-white">
+
+                        <strong>
+
+                            <i class="bi bi-diagram-3 text-primary me-1"></i>
+
+                            Tiến trình trình ký
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+
+                        <div class="sign-workflow">
+
+
+                            <!-- NGƯỜI LẬP -->
+
+                            <div class="sign-step completed">
+
+
+                                <div class="sign-step-circle">
+
+                                    <i class="bi bi-check-lg"></i>
+
+                                </div>
+
+
+                                <div class="sign-step-content">
+
+
+                                    <div class="fw-semibold">
+
+                                        Người lập
+
+                                    </div>
+
+
+                                    <div class="small text-muted"
+                                         th:if="${document.createdBy != null}"
+                                         th:text="${document.createdBy.fullName}">
+
+                                        Nguyễn Văn A
+
+                                    </div>
+
+
+                                    <div class="small text-muted"
+                                         th:if="${document.createdAt != null}"
+                                         th:text="${#temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm')}">
+
+                                        10/06/2025 08:30
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- MŨI TÊN -->
+
+                            <div class="sign-workflow-arrow"
+                                 th:if="${flows != null and !#lists.isEmpty(flows)}">
+
+                                <i class="bi bi-chevron-right"></i>
+
+                            </div>
+
+
+                            <!-- CÁC BƯỚC KÝ -->
+
+                            <th:block th:if="${flows != null}"
+                                      th:each="f, stat : ${flows}">
+
+
+                                <div class="sign-step"
+                                     th:classappend="${f.status != null and f.status.name() == 'SIGNED'}
+                                        ? ' completed'
+                                        : (${f.status != null and f.status.name() == 'SIGNING'}
+                                        ? ' current'
+                                        : ' waiting')">
+
+
+                                    <div class="sign-step-circle">
+
+
+                                        <i th:if="${f.status != null and f.status.name() == 'SIGNED'}"
+                                           class="bi bi-check-lg">
+                                        </i>
+
+
+                                        <span th:unless="${f.status != null and f.status.name() == 'SIGNED'}"
+                                              th:text="${f.stepOrder}">
+
+                                            1
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                    <div class="sign-step-content">
+
+
+                                        <div class="fw-semibold">
+
+                                            Người ký
+
+                                            <span th:text="${f.stepOrder}">
+                                                1
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="small"
+                                             th:if="${f.approver != null}"
+                                             th:classappend="${f.status != null and f.status.name() == 'SIGNING'}
+                                                ? ' text-primary fw-semibold'
+                                                : ' text-muted'"
+                                             th:text="${f.approver.fullName}">
+
+                                            Trần Thị B
+
+                                        </div>
+
+
+                                        <div class="small">
+
+
+                                            <!-- SIGNING -->
+
+                                            <span th:if="${f.status != null and f.status.name() == 'SIGNING'}"
+                                                  class="text-primary">
+
+                                                <i class="bi bi-hourglass-split me-1"></i>
+
+                                                Đang xử lý
+
+                                            </span>
+
+
+                                            <!-- WAITING -->
+
+                                            <span th:if="${f.status != null and f.status.name() == 'WAITING'}"
+                                                  class="text-muted">
+
+                                                <i class="bi bi-clock me-1"></i>
+
+                                                Chờ xử lý
+
+                                            </span>
+
+
+                                            <!-- SIGNED -->
+
+                                            <span th:if="${f.status != null and f.status.name() == 'SIGNED'}"
+                                                  class="text-success">
+
+                                                <i class="bi bi-check-circle me-1"></i>
+
+                                                Đã ký
+
+                                            </span>
+
+
+                                            <!-- REJECTED -->
+
+                                            <span th:if="${f.status != null and f.status.name() == 'REJECTED'}"
+                                                  class="text-danger">
+
+                                                <i class="bi bi-x-circle me-1"></i>
+
+                                                Từ chối
+
+                                            </span>
+
+
+                                            <!-- RETURNED -->
+
+                                            <span th:if="${f.status != null and f.status.name() == 'RETURNED'}"
+                                                  class="text-warning">
+
+                                                <i class="bi bi-arrow-return-left me-1"></i>
+
+                                                Trả lại
+
+                                            </span>
+
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- MŨI TÊN -->
+
+                                <div class="sign-workflow-arrow"
+                                     th:if="${!stat.last}">
+
+                                    <i class="bi bi-chevron-right"></i>
+
+                                </div>
+
+
+                            </th:block>
+
+
+                            <!-- KHÔNG CÓ LUỒNG -->
+
+                            <div th:if="${flows == null or #lists.isEmpty(flows)}"
+                                 class="text-muted small">
+
+                                Chưa thiết lập luồng trình ký.
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     NỘI DUNG 3 CỘT
+                ================================================== -->
+
+                <div class="row g-3">
+
+
+                    <!-- =================================================
+                         CỘT TRÁI - FILE
+                    ================================================== -->
+
+                    <div class="col-xl-4">
+
+
+                        <div class="card border-0 shadow-sm h-100">
+
+
+                            <div class="card-header bg-white
+                                        d-flex
+                                        justify-content-between
+                                        align-items-center">
+
+
+                                <strong>
+
+                                    <i class="bi bi-file-earmark-text text-primary me-1"></i>
+
+                                    Hồ sơ
+
+                                </strong>
+
+
+                                <span class="badge text-bg-light">
+
+                                    Xem trước
+
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <!-- KHÔNG CÓ FILE -->
+
+                                <div th:if="${document.files == null or #lists.isEmpty(document.files)}"
+                                     class="text-center text-muted py-5">
+
+
+                                    <i class="bi bi-file-earmark-x fs-1"></i>
+
+
+                                    <div class="mt-2">
+
+                                        Chưa có tài liệu.
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- FILE -->
+
+                                <div th:if="${document.files != null}"
+                                     th:each="f : ${document.files}"
+                                     class="mb-3">
+
+
+                                    <div class="border rounded p-2
+                                                bg-light
+                                                d-flex
+                                                align-items-center
+                                                justify-content-between
+                                                gap-2">
+
+
+                                        <div class="text-truncate">
+
+
+                                            <i class="bi bi-file-earmark text-danger me-2"></i>
+
+
+                                            <span th:text="${f.fileName}">
+
+                                                De_nghi_mua_sam.pdf
+
+                                            </span>
+
+
+                                        </div>
+
+
+                                        <a class="btn btn-sm btn-outline-primary flex-shrink-0"
+                                           th:href="@{'/documents/files/' + ${f.id} + '/download'}"
+                                           target="_blank">
+
+                                            <i class="bi bi-download"></i>
+
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <!-- PDF -->
+
+                                    <iframe th:if="${f.fileType != null and f.fileType == 'application/pdf'}"
+                                            th:src="@{'/documents/files/' + ${f.id} + '/download'}"
+                                            class="document-preview"
+                                            title="Xem trước tài liệu PDF">
+                                    </iframe>
+
+
+                                    <!-- FILE KHÁC -->
+
+                                    <div th:unless="${f.fileType != null and f.fileType == 'application/pdf'}"
+                                         class="document-no-preview">
+
+
+                                        <i class="bi bi-file-earmark-text text-primary fs-1"></i>
+
+
+                                        <div class="mt-2 mb-3">
+
+                                            File này không hỗ trợ
+                                            xem trước trực tiếp.
+
+                                        </div>
+
+
+                                        <a class="btn btn-outline-primary"
+                                           th:href="@{'/documents/files/' + ${f.id} + '/download'}"
+                                           target="_blank">
+
+                                            <i class="bi bi-folder2-open me-1"></i>
+
+                                            Mở tài liệu
+
+                                        </a>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         CỘT GIỮA
+                    ================================================== -->
+
+                    <div class="col-xl-5">
+
+
+                        <!-- =================================================
+                             THẢO LUẬN
+                        ================================================== -->
+
+                        <div class="card border-0 shadow-sm">
+
+
+                            <div class="card-header bg-white">
+
+
+                                <strong>
+
+                                    <i class="bi bi-chat-left-text text-primary me-1"></i>
+
+                                    Thảo luận trong quá trình trình ký
+
+                                </strong>
+
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <div class="sign-timeline">
+
+
+                                    <!-- ACTIONS -->
+
+                                    <div th:if="${actions != null}"
+                                         th:each="a : ${actions}"
+                                         class="sign-message">
+
+
+                                        <div class="sign-message-line">
+
+                                            <div class="sign-message-dot">
+
+                                                <i class="bi bi-person-fill"></i>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="sign-message-content">
+
+
+                                            <div class="d-flex
+                                                        justify-content-between
+                                                        align-items-start
+                                                        gap-2">
+
+
+                                                <div>
+
+
+                                                    <div class="fw-semibold"
+                                                         th:if="${a.user != null}"
+                                                         th:text="${a.user.fullName}">
+
+                                                        Nguyễn Văn A
+
+                                                    </div>
+
+
+                                                    <div class="small text-muted"
+                                                         th:if="${a.action != null}"
+                                                         th:text="${a.action.label}">
+
+                                                        Người lập
+
+                                                    </div>
+
+
+                                                </div>
+
+
+                                                <div class="small text-muted text-nowrap"
+                                                     th:if="${a.actionTime != null}"
+                                                     th:text="${#temporals.format(a.actionTime, 'dd/MM/yyyy HH:mm')}">
+
+                                                    10/06/2025 08:30
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <!-- COMMENT -->
+
+                                            <div th:if="${a.comment != null and !#strings.isEmpty(a.comment)}"
+                                                 class="sign-comment">
+
+                                                <span th:text="${a.comment}">
+
+                                                    Hồ sơ cơ bản đầy đủ.
+
+                                                </span>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <!-- NO ACTION -->
+
+                                    <div th:if="${actions == null or #lists.isEmpty(actions)}"
+                                         class="text-center text-muted py-5">
+
+
+                                        <i class="bi bi-chat-left-dots fs-1"></i>
+
+
+                                        <div class="mt-2">
+
+                                            Chưa có trao đổi.
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- NOTE -->
+
+                                <div class="mt-3"
+                                     th:if="${currentFlow != null}">
+
+
+                                    <form th:action="@{'/flows/' + ${currentFlow.id} + '/note'}"
+                                          method="post">
+
+
+                                        <div class="input-group">
+
+
+                                            <input type="text"
+                                                   name="comment"
+                                                   class="form-control"
+                                                   placeholder="Nhập ý kiến thảo luận..."
+                                                   maxlength="1000"
+                                                   required>
+
+
+                                            <input type="hidden"
+                                                   th:name="${_csrf.parameterName}"
+                                                   th:value="${_csrf.token}">
+
+
+                                            <button type="submit"
+                                                    class="btn btn-primary">
+
+                                                <i class="bi bi-send me-1"></i>
+
+                                                Gửi
+
+                                            </button>
+
+
+                                        </div>
+
+
+                                    </form>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             Ý KIẾN XỬ LÝ
+                        ================================================== -->
+
+                        <div class="card border-0 shadow-sm mt-3"
+                             th:if="${currentFlow != null
+                                     and currentFlow.status != null
+                                     and currentFlow.status.name() == 'SIGNING'}">
+
+
+                            <div class="card-header bg-white">
+
+
+                                <strong>
+
+                                    <i class="bi bi-pencil-square text-primary me-1"></i>
+
+                                    Ý kiến xử lý
+
+                                </strong>
+
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <!-- THÔNG BÁO -->
+
+                                <div class="alert alert-info py-2 small mb-3">
+
+                                    <i class="bi bi-info-circle me-1"></i>
+
+                                    Vui lòng nhập ý kiến khi từ chối
+                                    hoặc yêu cầu chỉnh sửa hồ sơ.
+
+                                </div>
+
+
+                                <!-- Ô NHẬP Ý KIẾN -->
+
+                                <textarea id="signComment"
+                                          class="form-control mb-3"
+                                          rows="4"
+                                          maxlength="1000"
+                                          placeholder="Nhập ý kiến xử lý..."></textarea>
+
+
+                                <div class="d-flex flex-wrap gap-2">
+
+
+                                    <!-- =================================================
+                                         1. CHUYỂN TIẾP
+                                    ================================================== -->
+
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            onclick="forwardDocument()">
+
+                                        <i class="bi bi-check-circle me-1"></i>
+
+                                        Chuyển tiếp
+
+                                    </button>
+
+
+                                    <!-- =================================================
+                                         2. TỪ CHỐI
+                                    ================================================== -->
+
+                                    <button type="button"
+                                            class="btn btn-danger"
+                                            onclick="act('reject')">
+
+                                        <i class="bi bi-x-circle me-1"></i>
+
+                                        Từ chối
+
+                                    </button>
+
+
+                                    <!-- =================================================
+                                         3. YÊU CẦU CHỈNH SỬA
+                                    ================================================== -->
+
+                                    <button type="button"
+                                            class="btn btn-warning"
+                                            onclick="act('return')">
+
+                                        <i class="bi bi-arrow-return-left me-1"></i>
+
+                                        Yêu cầu chỉnh sửa
+
+                                    </button>
+
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         CỘT PHẢI
+                    ================================================== -->
+
+                    <div class="col-xl-3">
+
+
+                        <!-- DANH SÁCH NGƯỜI DÙNG -->
+
+                        <div class="card border-0 shadow-sm mb-3">
+
+
+                            <div class="card-header bg-white">
+
+
+                                <strong>
+
+                                    <i class="bi bi-people text-primary me-1"></i>
+
+                                    Danh sách người dùng
+
+                                </strong>
+
+
+                            </div>
+
+
+                            <div class="card-body p-2">
+
+
+                                <input type="text"
+                                       id="userSearch"
+                                       class="form-control form-control-sm mb-2"
+                                       placeholder="Tìm kiếm người dùng...">
+
+
+                                <div class="user-list">
+
+
+                                    <div th:if="${users != null}"
+                                         th:each="u : ${users}"
+                                         class="user-item">
+
+
+                                        <div class="user-avatar">
+
+
+                                            <span th:if="${u.fullName != null and !#strings.isEmpty(u.fullName)}"
+                                                  th:text="${#strings.substring(u.fullName,0,1).toUpperCase()}">
+
+                                                A
+
+                                            </span>
+
+
+                                            <span th:unless="${u.fullName != null and !#strings.isEmpty(u.fullName)}">
+
+                                                ?
+
+                                            </span>
+
+
+                                        </div>
+
+
+                                        <div class="flex-grow-1 overflow-hidden">
+
+
+                                            <div class="fw-semibold text-truncate"
+                                                 th:text="${u.fullName}">
+
+                                                Nguyễn Văn A
+
+                                            </div>
+
+
+                                            <div class="small text-muted text-truncate"
+                                                 th:text="${u.position}">
+
+                                                Giám đốc
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <span class="badge text-bg-light"
+                                              th:text="${u.role}">
+
+                                            APPROVER
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                    <div th:if="${users == null or #lists.isEmpty(users)}"
+                                         class="text-center text-muted py-4">
+
+
+                                        <i class="bi bi-people fs-3"></i>
+
+
+                                        <div class="small mt-2">
+
+                                            Chưa có người dùng.
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- THÔNG TIN XỬ LÝ -->
+
+                        <div class="card border-0 shadow-sm mb-3"
+                             th:if="${currentFlow != null}">
+
+
+                            <div class="card-header bg-white">
+
+
+                                <strong>
+
+                                    <i class="bi bi-person-check text-primary me-1"></i>
+
+                                    Thông tin xử lý hiện tại
+
+                                </strong>
+
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <div class="d-flex align-items-center gap-3"
+                                     th:if="${currentFlow.approver != null}">
+
+
+                                    <div class="current-user-avatar">
+
+
+                                        <span th:if="${currentFlow.approver.fullName != null and !#strings.isEmpty(currentFlow.approver.fullName)}"
+                                              th:text="${#strings.substring(currentFlow.approver.fullName,0,1).toUpperCase()}">
+
+                                            T
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                    <div>
+
+
+                                        <div class="fw-bold"
+                                             th:text="${currentFlow.approver.fullName}">
+
+                                            Trần Thị B
+
+                                        </div>
+
+
+                                        <div class="small text-muted"
+                                             th:text="${currentFlow.approver.position}">
+
+                                            Trưởng phòng
+
+                                        </div>
+
+
+                                        <!-- SIGNING -->
+
+                                        <span class="badge text-bg-warning mt-1"
+                                              th:if="${currentFlow.status != null and currentFlow.status.name() == 'SIGNING'}">
+
+                                            Đang xử lý
+
+                                        </span>
+
+
+                                        <!-- WAITING -->
+
+                                        <span class="badge text-bg-secondary mt-1"
+                                              th:if="${currentFlow.status != null and currentFlow.status.name() == 'WAITING'}">
+
+                                            Chờ xử lý
+
+                                        </span>
+
+
+                                        <!-- SIGNED -->
+
+                                        <span class="badge text-bg-success mt-1"
+                                              th:if="${currentFlow.status != null and currentFlow.status.name() == 'SIGNED'}">
+
+                                            Đã ký
+
+                                        </span>
+
+
+                                        <!-- REJECTED -->
+
+                                        <span class="badge text-bg-danger mt-1"
+                                              th:if="${currentFlow.status != null and currentFlow.status.name() == 'REJECTED'}">
+
+                                            Từ chối
+
+                                        </span>
+
+
+                                        <!-- RETURNED -->
+
+                                        <span class="badge text-bg-warning mt-1"
+                                              th:if="${currentFlow.status != null and currentFlow.status.name() == 'RETURNED'}">
+
+                                            Trả lại
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="small text-muted mt-3"
+                                     th:if="${currentFlow.sentAt != null}">
+
+
+                                    <i class="bi bi-clock me-1"></i>
+
+                                    Ngày nhận:
+
+
+                                    <span th:text="${#temporals.format(currentFlow.sentAt, 'dd/MM/yyyy HH:mm')}">
+
+                                        10/06/2025 08:35
+
+                                    </span>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- LUỒNG TRÌNH KÝ -->
+
+                        <div class="card border-0 shadow-sm mb-3">
+
+
+                            <div class="card-header bg-white">
+
+
+                                <strong>
+
+                                    <i class="bi bi-diagram-3 text-primary me-1"></i>
+
+                                    Luồng trình ký
+
+                                </strong>
+
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <div th:if="${flows != null}"
+                                     th:each="f : ${flows}"
+                                     class="flow-mini-item">
+
+
+                                    <div class="flow-mini-number"
+                                         th:classappend="${f.status != null and f.status.name() == 'SIGNED'}
+                                            ? ' bg-success'
+                                            : (${f.status != null and f.status.name() == 'SIGNING'}
+                                            ? ' bg-primary'
+                                            : (${f.status != null and f.status.name() == 'REJECTED'}
+                                            ? ' bg-danger'
+                                            : ' bg-secondary'))">
+
+
+                                        <i th:if="${f.status != null and f.status.name() == 'SIGNED'}"
+                                           class="bi bi-check">
+                                        </i>
+
+
+                                        <span th:unless="${f.status != null and f.status.name() == 'SIGNED'}"
+                                              th:text="${f.stepOrder}">
+
+                                            1
+
+                                        </span>
+
+
+                                    </div>
+
+
+                                    <div class="flex-grow-1 overflow-hidden"
+                                         th:if="${f.approver != null}">
+
+
+                                        <div class="fw-semibold text-truncate"
+                                             th:text="${f.approver.fullName}">
+
+                                            Trần Thị B
+
+                                        </div>
+
+
+                                        <div class="small text-muted text-truncate"
+                                             th:text="${f.approver.position}">
+
+                                            Trưởng phòng
+
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <span class="badge"
+                                          th:if="${f.status != null}"
+                                          th:classappend="${' text-bg-' + f.status.css}"
+                                          th:text="${f.status.label}">
+
+                                        Đang xử lý
+
+                                    </span>
+
+
+                                </div>
+
+
+                                <div th:if="${flows == null or #lists.isEmpty(flows)}"
+                                     class="text-center text-muted py-3">
+
+
+                                    <i class="bi bi-diagram-3 fs-3"></i>
+
+
+                                    <div class="small mt-2">
+
+                                        Chưa có luồng trình ký.
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <hr>
+
+
+                                <div>
+
+
+                                    <div class="small text-muted">
+
+                                        Trạng thái hồ sơ
+
+                                    </div>
+
+
+                                    <div class="fw-bold mt-1"
+                                         th:if="${document.status != null}"
+                                         th:text="${document.status.label}">
+
+                                        Đang trình ký
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer th:replace="~{fragments/layout :: footer}">
+    </footer>
+
+
+    <!-- =====================================================
+         LAYOUT SCRIPTS
+    ====================================================== -->
+
+    <div th:replace="~{fragments/layout :: scripts}">
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:inline="javascript">
+
+
+    /* =========================================================
+       DOCUMENT ID
+    ========================================================= */
+
+    function getDocumentId() {
+
+        const documentId =
+            /*[[${document != null ? document.id : 0}]]*/ 0;
+
+        return documentId;
+    }
+
+
+
+    /* =========================================================
+       CURRENT FLOW ID
+    ========================================================= */
+
+    function getCurrentFlowId() {
+
+        const currentFlowId =
+            /*[[${currentFlow != null ? currentFlow.id : 0}]]*/ 0;
+
+        return currentFlowId;
+    }
+
+
+
+    /* =========================================================
+       CHUYỂN TIẾP
+
+       POST:
+       /documents/{documentId}/forward
+    ========================================================= */
+
+    function forwardDocument() {
+
+
+        const documentId =
+            getDocumentId();
+
+
+        if (!documentId || documentId === 0) {
+
+            alert(
+                "Không xác định được hồ sơ cần chuyển tiếp."
+            );
+
+            return;
+        }
+
+
+        const commentElement =
+            document.getElementById("signComment");
+
+
+        const comment =
+            commentElement
+                ? commentElement.value.trim()
+                : "";
+
+
+        if (!confirm(
+            "Bạn có chắc muốn ký và chuyển hồ sơ sang người tiếp theo?"
+        )) {
+
+            return;
+        }
+
+
+        const form =
+            document.createElement("form");
+
+
+        form.method =
+            "POST";
+
+
+        form.action =
+            "/documents/"
+            + documentId
+            + "/forward";
+
+
+        /* CSRF */
+
+        const csrfName =
+            /*[[${_csrf.parameterName}]]*/ "_csrf";
+
+
+        const csrfToken =
+            /*[[${_csrf.token}]]*/ "";
+
+
+        const csrf =
+            document.createElement("input");
+
+
+        csrf.type =
+            "hidden";
+
+        csrf.name =
+            csrfName;
+
+        csrf.value =
+            csrfToken;
+
+
+        form.appendChild(csrf);
+
+
+        /* COMMENT */
+
+        const commentInput =
+            document.createElement("input");
+
+
+        commentInput.type =
+            "hidden";
+
+        commentInput.name =
+            "comment";
+
+        commentInput.value =
+            comment;
+
+
+        form.appendChild(commentInput);
+
+
+        document.body.appendChild(form);
+
+
+        form.submit();
+
+    }
+
+
+
+    /* =========================================================
+       TỪ CHỐI / YÊU CẦU CHỈNH SỬA
+
+       reject:
+       /flows/{flowId}/reject
+
+       return:
+       /flows/{flowId}/return
+    ========================================================= */
+
+    function act(action) {
+
+
+        const currentFlowId =
+            getCurrentFlowId();
+
+
+        if (!currentFlowId || currentFlowId === 0) {
+
+            alert(
+                "Hiện tại không có bước ký nào đang được xử lý."
+            );
+
+            return;
+        }
+
+
+        if (
+            action !== "reject"
+            &&
+            action !== "return"
+        ) {
+
+            alert(
+                "Hành động không hợp lệ."
+            );
+
+            return;
+        }
+
+
+        const commentElement =
+            document.getElementById("signComment");
+
+
+        const comment =
+            commentElement
+                ? commentElement.value.trim()
+                : "";
+
+
+        if (comment === "") {
+
+            alert(
+                "Vui lòng nhập ý kiến xử lý."
+            );
+
+
+            if (commentElement) {
+
+                commentElement.focus();
+
+            }
+
+
+            return;
+        }
+
+
+        let message;
+
+
+        if (action === "reject") {
+
+            message =
+                "Bạn có chắc muốn từ chối hồ sơ này?";
+
+        }
+        else {
+
+            message =
+                "Bạn có chắc muốn yêu cầu chỉnh sửa hồ sơ?";
+
+        }
+
+
+        if (!confirm(message)) {
+
+            return;
+        }
+
+
+        const form =
+            document.createElement("form");
+
+
+        form.method =
+            "POST";
+
+
+        form.action =
+            "/flows/"
+            + currentFlowId
+            + "/"
+            + action;
+
+
+        /* CSRF */
+
+        const csrfName =
+            /*[[${_csrf.parameterName}]]*/ "_csrf";
+
+
+        const csrfToken =
+            /*[[${_csrf.token}]]*/ "";
+
+
+        const csrf =
+            document.createElement("input");
+
+
+        csrf.type =
+            "hidden";
+
+        csrf.name =
+            csrfName;
+
+        csrf.value =
+            csrfToken;
+
+
+        form.appendChild(csrf);
+
+
+        /* COMMENT */
+
+        const commentInput =
+            document.createElement("input");
+
+
+        commentInput.type =
+            "hidden";
+
+        commentInput.name =
+            "comment";
+
+        commentInput.value =
+            comment;
+
+
+        form.appendChild(commentInput);
+
+
+        document.body.appendChild(form);
+
+
+        form.submit();
+
+    }
+
+
+
+    /* =========================================================
+       TÌM KIẾM NGƯỜI DÙNG
+    ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            const search =
+                document.getElementById("userSearch");
+
+
+            if (!search) {
+
+                return;
+            }
+
+
+            search.addEventListener(
+                "input",
+                function () {
+
+
+                    const keyword =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    document
+                        .querySelectorAll(".user-item")
+                        .forEach(
+                            function (item) {
+
+
+                                const text =
+                                    item.innerText
+                                        .toLowerCase();
+
+
+                                item.style.display =
+                                    text.includes(keyword)
+                                        ? ""
+                                        : "none";
+
+
+                            }
+                        );
+
+
+                }
+            );
+
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

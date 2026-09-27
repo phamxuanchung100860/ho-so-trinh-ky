@@ -1,0 +1,1435 @@
+﻿<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Danh sách hồ sơ')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- CONTENT -->
+    <main class="app-main">
+
+        <div class="app-content">
+            <div class="container-fluid py-3">
+
+                <!-- =========================
+                     HEADER
+                ========================== -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div>
+                        <h1 class="fw-bold mb-1"
+                            style="color:#173b72;">
+                            Danh sách hồ sơ
+                        </h1>
+
+                        <div class="text-muted">
+                            Quản lý, tra cứu và theo dõi trạng thái tất cả hồ sơ
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                onclick="exportExcel()">
+                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            Xuất Excel
+                        </button>
+
+                        <a href="/documents/new"
+                           class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-1"></i>
+                            Tạo hồ sơ mới
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- =========================
+                     FILTER
+                ========================== -->
+                <div class="card shadow-sm border-0 mb-3">
+
+                    <div class="card-body">
+
+                        <div class="row g-3">
+
+                            <!-- KEYWORD -->
+                            <div class="col-lg-3 col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    Từ khóa
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+
+                                    <input type="text"
+                                           id="keyword"
+                                           class="form-control"
+                                           placeholder="Nhập mã, tên hồ sơ...">
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- STATUS -->
+                            <div class="col-lg-2 col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    Trạng thái
+                                </label>
+
+                                <select id="statusFilter"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Tất cả
+                                    </option>
+
+                                    <option value="DRAFT">
+                                        Nháp
+                                    </option>
+
+                                    <option value="WAITING_SIGN">
+                                        Chờ ký
+                                    </option>
+
+                                    <option value="SIGNING">
+                                        Đang xử lý
+                                    </option>
+
+                                    <option value="SIGNED">
+                                        Đã ký
+                                    </option>
+
+                                    <option value="COMPLETED">
+                                        Hoàn tất
+                                    </option>
+
+                                    <option value="REJECTED">
+                                        Từ chối
+                                    </option>
+
+                                    <option value="RETURNED">
+                                        Trả lại
+                                    </option>
+
+                                    <option value="CANCELLED">
+                                        Đã hủy
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- TYPE -->
+                            <div class="col-lg-2 col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    Loại hồ sơ
+                                </label>
+
+                                <select id="typeFilter"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Tất cả
+                                    </option>
+
+                                    <option value="Mua sắm">
+                                        Mua sắm
+                                    </option>
+
+                                    <option value="Kế hoạch">
+                                        Kế hoạch
+                                    </option>
+
+                                    <option value="Tài chính">
+                                        Tài chính
+                                    </option>
+
+                                    <option value="Báo cáo">
+                                        Báo cáo
+                                    </option>
+
+                                    <option value="Nhân sự">
+                                        Nhân sự
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- CREATOR -->
+                            <div class="col-lg-2 col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    Người lập
+                                </label>
+
+                                <select id="creatorFilter"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Tất cả
+                                    </option>
+
+                                    <option value="Nguyễn Văn A">
+                                        Nguyễn Văn A
+                                    </option>
+
+                                    <option value="Trần Thị B">
+                                        Trần Thị B
+                                    </option>
+
+                                    <option value="Lê Văn C">
+                                        Lê Văn C
+                                    </option>
+
+                                    <option value="Phạm Thị D">
+                                        Phạm Thị D
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- PROCESSING -->
+                            <div class="col-lg-3 col-md-6">
+
+                                <label class="form-label fw-semibold">
+                                    Người đang xử lý
+                                </label>
+
+                                <select id="processorFilter"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Tất cả
+                                    </option>
+
+                                    <option value="Trần Thị B">
+                                        Trần Thị B
+                                    </option>
+
+                                    <option value="Lê Văn C">
+                                        Lê Văn C
+                                    </option>
+
+                                    <option value="Nguyễn Văn D">
+                                        Nguyễn Văn D
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="row mt-3">
+
+                            <div class="col-12 d-flex gap-2">
+
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        onclick="applyFilters()">
+
+                                    <i class="bi bi-search me-1"></i>
+                                    Tìm kiếm
+
+                                </button>
+
+
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick="resetFilters()">
+
+                                    <i class="bi bi-arrow-clockwise me-1"></i>
+                                    Làm mới
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     TABLE
+                ========================== -->
+                <div class="card shadow-sm border-0">
+
+                    <div class="card-header bg-white py-3">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+                                <span class="fw-bold fs-5">
+                                    Danh sách hồ sơ
+                                </span>
+                            </div>
+
+                            <div class="text-muted">
+
+                                Tổng:
+                                <strong id="totalDocuments">
+                                    0
+                                </strong>
+                                hồ sơ
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle mb-0"
+                               id="documentTable">
+
+                            <thead class="table-light">
+
+                            <tr>
+
+                                <th style="width:50px;">
+                                    STT
+                                </th>
+
+                                <th style="min-width:120px;">
+                                    Mã hồ sơ
+                                </th>
+
+                                <th style="min-width:260px;">
+                                    Tên hồ sơ
+                                </th>
+
+                                <th style="min-width:120px;">
+                                    Loại hồ sơ
+                                </th>
+
+                                <th style="min-width:150px;">
+                                    Người lập
+                                </th>
+
+                                <th style="min-width:150px;">
+                                    Ngày tạo
+                                </th>
+
+                                <th style="min-width:160px;">
+                                    Người đang xử lý
+                                </th>
+
+                                <th style="min-width:130px;">
+                                    Trạng thái
+                                </th>
+
+                                <th style="min-width:120px;">
+                                    Hạn xử lý
+                                </th>
+
+                                <th style="width:150px;">
+                                    Thao tác
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <tr th:each="d,st : ${documents}"
+                                class="document-row"
+
+                                th:attr="
+                                data-code=${d.documentCode},
+                                data-title=${d.title},
+                                data-status=${d.status.name()},
+                                data-creator=${d.createdBy.fullName}
+                                ">
+
+                                <!-- STT -->
+                                <td class="fw-semibold text-center row-number">
+                                    1
+                                </td>
+
+
+                                <!-- CODE -->
+                                <td>
+
+                                    <span class="fw-semibold text-primary"
+                                          th:text="${d.documentCode}">
+                                        HS-2026-001
+                                    </span>
+
+                                </td>
+
+
+                                <!-- TITLE -->
+                                <td>
+
+                                    <div class="fw-semibold"
+                                         th:text="${d.title}">
+                                        Hồ sơ
+                                    </div>
+
+                                    <small class="text-muted"
+                                           th:if="${d.description != null}"
+                                           th:text="${d.description}">
+                                    </small>
+
+                                </td>
+
+
+                                <!-- TYPE -->
+                                <td>
+
+                                    <span class="document-type">
+                                        Hồ sơ
+                                    </span>
+
+                                </td>
+
+
+                                <!-- CREATOR -->
+                                <td>
+
+                                    <div class="d-flex align-items-center gap-2">
+
+                                        <div class="user-avatar">
+                                            <span
+                                                th:text="${#strings.substring(d.createdBy.fullName,0,1)}">
+                                                N
+                                            </span>
+                                        </div>
+
+                                        <span th:text="${d.createdBy.fullName}">
+                                            Nguyễn Văn A
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- CREATED -->
+                                <td>
+
+                                    <span th:text="${#temporals.format(d.createdAt,'dd/MM/yyyy HH:mm')}">
+                                        10/09/2026 08:30
+                                    </span>
+
+                                </td>
+
+
+                                <!-- PROCESSOR -->
+                                <td>
+
+                                    <span class="processor-name text-muted">
+                                        -
+                                    </span>
+
+                                    <span th:each="flow : ${d.flows}"
+                                          th:if="${flow.status.name() == 'SIGNING'}"
+                                          class="processor-real"
+                                          th:text="${flow.approver.fullName}">
+                                        Trần Thị B
+                                    </span>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+                                <td>
+
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          th:classappend="${'status-' + d.status.name()}"
+                                          th:text="${d.status.label}">
+                                        Chờ ký
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DEADLINE -->
+                                <td>
+
+                                    <span th:if="${d.status.name() != 'COMPLETED'
+                                                 and d.status.name() != 'CANCELLED'
+                                                 and d.status.name() != 'REJECTED'}"
+                                          th:text="${#temporals.format(d.createdAt.plusDays(2),'dd/MM/yyyy')}">
+                                        12/09/2026
+                                    </span>
+
+                                    <span th:if="${d.status.name() == 'COMPLETED'
+                                                 or d.status.name() == 'CANCELLED'
+                                                 or d.status.name() == 'REJECTED'}"
+                                          class="text-muted">
+                                        -
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ACTION -->
+                                <td>
+
+                                    <div class="d-flex gap-1">
+
+                                        <!-- VIEW -->
+                                        <a class="btn btn-sm btn-outline-primary"
+                                           title="Xem hồ sơ"
+                                           th:href="@{'/documents/' + ${d.id}}">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+
+                                        <!-- EDIT -->
+                                        <a th:if="${d.status.name() == 'DRAFT'
+                                                   or d.status.name() == 'RETURNED'}"
+                                           class="btn btn-sm btn-outline-secondary"
+                                           title="Chỉnh sửa"
+                                           th:href="@{'/documents/' + ${d.id} + '/wizard?step=1'}">
+
+                                            <i class="bi bi-pencil"></i>
+
+                                        </a>
+
+
+                                        <!-- SIGN -->
+                                        <a th:if="${d.status.name() == 'SIGNING'}"
+                                           class="btn btn-sm btn-outline-success"
+                                           title="Xử lý ký"
+                                           th:href="@{'/documents/' + ${d.id} + '/sign'}">
+
+                                            <i class="bi bi-pen"></i>
+
+                                        </a>
+
+
+                                        <!-- PRINT -->
+                                        <a class="btn btn-sm btn-outline-dark"
+                                           title="In trình ký"
+                                           target="_blank"
+                                           th:href="@{'/documents/' + ${d.id} + '/print'}">
+
+                                            <i class="bi bi-printer"></i>
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- EMPTY -->
+                            <tr id="emptyRow"
+                                th:if="${#lists.isEmpty(documents)}">
+
+                                <td colspan="10"
+                                    class="text-center py-5">
+
+                                    <i class="bi bi-folder2-open fs-1 text-muted"></i>
+
+                                    <div class="mt-2 text-muted">
+                                        Chưa có hồ sơ.
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- =========================
+                         PAGINATION
+                    ========================== -->
+                    <div class="card-footer bg-white">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                <span class="text-muted">
+                                    Hiển thị
+                                </span>
+
+                                <select id="pageSize"
+                                        class="form-select form-select-sm"
+                                        style="width:90px;"
+                                        onchange="changePageSize()">
+
+                                    <option value="10">
+                                        10
+                                    </option>
+
+                                    <option value="20">
+                                        20
+                                    </option>
+
+                                    <option value="50">
+                                        50
+                                    </option>
+
+                                    <option value="100">
+                                        100
+                                    </option>
+
+                                </select>
+
+                                <span class="text-muted">
+                                    bản ghi
+                                </span>
+
+                            </div>
+
+
+                            <div id="pageInfo"
+                                 class="text-muted">
+                                Hiển thị 1 - 10
+                            </div>
+
+
+                            <nav>
+
+                                <ul class="pagination pagination-sm mb-0"
+                                    id="pagination">
+
+                                </ul>
+
+                            </nav>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        Phần mềm quản lý và trình ký hồ sơ
+    </footer>
+
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</div>
+
+
+<style>
+
+/* =====================================
+   TABLE
+===================================== */
+
+#documentTable {
+    font-size: 14px;
+}
+
+#documentTable thead th {
+    background: #f5f8fc;
+    color: #334155;
+    font-weight: 700;
+    border-bottom: 1px solid #dee2e6;
+    white-space: nowrap;
+}
+
+#documentTable tbody td {
+    padding: 13px 10px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+#documentTable tbody tr:hover {
+    background: #f8fbff;
+}
+
+
+/* =====================================
+   USER AVATAR
+===================================== */
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+
+    border-radius: 50%;
+
+    background: #e8f1ff;
+
+    color: #1769e0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 700;
+
+    font-size: 13px;
+}
+
+
+/* =====================================
+   STATUS
+===================================== */
+
+.status-DRAFT {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.status-WAITING_SIGN {
+    background: #fff3cd;
+    color: #996c00;
+}
+
+.status-SIGNING {
+    background: #cfe8ff;
+    color: #0864b8;
+}
+
+.status-SIGNED {
+    background: #d1e7dd;
+    color: #146c43;
+}
+
+.status-COMPLETED {
+    background: #d1e7dd;
+    color: #146c43;
+}
+
+.status-REJECTED {
+    background: #f8d7da;
+    color: #b02a37;
+}
+
+.status-RETURNED {
+    background: #ffe5d0;
+    color: #b35c00;
+}
+
+.status-CANCELLED {
+    background: #dee2e6;
+    color: #495057;
+}
+
+
+/* =====================================
+   TYPE
+===================================== */
+
+.document-type {
+    display: inline-block;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    border-radius: 6px;
+
+    padding: 4px 9px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+/* =====================================
+   BUTTON
+===================================== */
+
+#documentTable .btn {
+    width: 32px;
+    height: 32px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+}
+
+
+/* =====================================
+   PAGINATION
+===================================== */
+
+.pagination .page-link {
+    cursor: pointer;
+}
+
+.pagination .active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 768px) {
+
+    .card-footer > div {
+        justify-content: center !important;
+    }
+
+}
+
+</style>
+
+
+<script>
+
+/* ============================================
+   DOCUMENT LIST
+============================================ */
+
+let currentPage = 1;
+
+let pageSize = 10;
+
+
+/* ============================================
+   GET ROWS
+============================================ */
+
+function getRows() {
+
+    return Array.from(
+        document.querySelectorAll(
+            "#documentTable tbody tr.document-row"
+        )
+    );
+
+}
+
+
+/* ============================================
+   DETERMINE DOCUMENT TYPE
+============================================ */
+
+function getDocumentType(title) {
+
+    title = title.toLowerCase();
+
+    if (
+        title.includes("mua") ||
+        title.includes("thiết bị") ||
+        title.includes("mua sắm")
+    ) {
+        return "Mua sắm";
+    }
+
+    if (
+        title.includes("kế hoạch") ||
+        title.includes("đào tạo") ||
+        title.includes("truyền thông")
+    ) {
+        return "Kế hoạch";
+    }
+
+    if (
+        title.includes("ngân sách") ||
+        title.includes("tài chính") ||
+        title.includes("thanh toán")
+    ) {
+        return "Tài chính";
+    }
+
+    if (
+        title.includes("báo cáo") ||
+        title.includes("kết quả")
+    ) {
+        return "Báo cáo";
+    }
+
+    if (
+        title.includes("nhân sự") ||
+        title.includes("công tác") ||
+        title.includes("khen thưởng")
+    ) {
+        return "Nhân sự";
+    }
+
+    return "Hồ sơ";
+
+}
+
+
+/* ============================================
+   APPLY TYPE TO ROW
+============================================ */
+
+function prepareRows() {
+
+    getRows().forEach(row => {
+
+        const title =
+            row.getAttribute("data-title") || "";
+
+        const type =
+            getDocumentType(title);
+
+        const typeElement =
+            row.querySelector(".document-type");
+
+        if (typeElement) {
+            typeElement.textContent = type;
+        }
+
+        row.setAttribute(
+            "data-type",
+            type
+        );
+
+
+        /* PROCESSOR */
+
+        const realProcessor =
+            row.querySelector(".processor-real");
+
+        const processor =
+            realProcessor
+                ? realProcessor.textContent.trim()
+                : "";
+
+        const processorName =
+            row.querySelector(".processor-name");
+
+        if (processor) {
+
+            processorName.textContent =
+                processor;
+
+            processorName.classList.remove(
+                "text-muted"
+            );
+
+        }
+
+        row.setAttribute(
+            "data-processor",
+            processor
+        );
+
+    });
+
+}
+
+
+/* ============================================
+   FILTER
+============================================ */
+
+function getFilteredRows() {
+
+    const keyword =
+        document
+            .getElementById("keyword")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const status =
+        document
+            .getElementById("statusFilter")
+            .value;
+
+    const type =
+        document
+            .getElementById("typeFilter")
+            .value;
+
+    const creator =
+        document
+            .getElementById("creatorFilter")
+            .value;
+
+    const processor =
+        document
+            .getElementById("processorFilter")
+            .value;
+
+
+    return getRows().filter(row => {
+
+        const code =
+            (row.getAttribute("data-code") || "")
+                .toLowerCase();
+
+        const title =
+            (row.getAttribute("data-title") || "")
+                .toLowerCase();
+
+        const rowCreator =
+            row.getAttribute("data-creator") || "";
+
+        const rowStatus =
+            row.getAttribute("data-status") || "";
+
+        const rowType =
+            row.getAttribute("data-type") || "";
+
+        const rowProcessor =
+            row.getAttribute("data-processor") || "";
+
+
+        const matchKeyword =
+            !keyword ||
+            code.includes(keyword) ||
+            title.includes(keyword) ||
+            rowCreator.toLowerCase().includes(keyword);
+
+
+        const matchStatus =
+            !status ||
+            rowStatus === status;
+
+
+        const matchType =
+            !type ||
+            rowType === type;
+
+
+        const matchCreator =
+            !creator ||
+            rowCreator === creator;
+
+
+        const matchProcessor =
+            !processor ||
+            rowProcessor === processor;
+
+
+        return (
+            matchKeyword &&
+            matchStatus &&
+            matchType &&
+            matchCreator &&
+            matchProcessor
+        );
+
+    });
+
+}
+
+
+/* ============================================
+   RENDER TABLE
+============================================ */
+
+function renderTable() {
+
+    const rows =
+        getRows();
+
+    const filtered =
+        getFilteredRows();
+
+
+    const total =
+        filtered.length;
+
+
+    document
+        .getElementById("totalDocuments")
+        .textContent = total;
+
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(total / pageSize)
+        );
+
+
+    if (currentPage > totalPages) {
+        currentPage = totalPages;
+    }
+
+
+    const start =
+        (currentPage - 1) * pageSize;
+
+    const end =
+        Math.min(
+            start + pageSize,
+            total
+        );
+
+
+    rows.forEach(row => {
+
+        row.style.display = "none";
+
+    });
+
+
+    filtered
+        .slice(start, end)
+        .forEach((row, index) => {
+
+            row.style.display = "";
+
+            const numberCell =
+                row.querySelector(".row-number");
+
+            numberCell.textContent =
+                start + index + 1;
+
+        });
+
+
+    document
+        .getElementById("pageInfo")
+        .textContent =
+        total === 0
+            ? "Không có dữ liệu"
+            : `Hiển thị ${start + 1} - ${end} của ${total} bản ghi`;
+
+
+    renderPagination(totalPages);
+
+
+    const emptyRow =
+        document.getElementById("emptyRow");
+
+    if (emptyRow) {
+
+        emptyRow.style.display =
+            total === 0
+                ? ""
+                : "none";
+
+    }
+
+}
+
+
+/* ============================================
+   PAGINATION
+============================================ */
+
+function renderPagination(totalPages) {
+
+    const pagination =
+        document.getElementById(
+            "pagination"
+        );
+
+    pagination.innerHTML = "";
+
+
+    function addPage(
+        text,
+        page,
+        disabled = false,
+        active = false
+    ) {
+
+        const li =
+            document.createElement("li");
+
+        li.className =
+            "page-item" +
+            (disabled ? " disabled" : "") +
+            (active ? " active" : "");
+
+
+        const button =
+            document.createElement("button");
+
+        button.className =
+            "page-link";
+
+        button.innerHTML =
+            text;
+
+
+        if (!disabled) {
+
+            button.onclick = function () {
+
+                currentPage = page;
+
+                renderTable();
+
+            };
+
+        }
+
+
+        li.appendChild(button);
+
+        pagination.appendChild(li);
+
+    }
+
+
+    addPage(
+        '<i class="bi bi-chevron-left"></i>',
+        currentPage - 1,
+        currentPage === 1
+    );
+
+
+    let start =
+        Math.max(
+            1,
+            currentPage - 2
+        );
+
+    let end =
+        Math.min(
+            totalPages,
+            currentPage + 2
+        );
+
+
+    if (start > 1) {
+
+        addPage(
+            "1",
+            1,
+            false,
+            currentPage === 1
+        );
+
+        if (start > 2) {
+
+            const li =
+                document.createElement("li");
+
+            li.className =
+                "page-item disabled";
+
+            li.innerHTML =
+                '<span class="page-link">...</span>';
+
+            pagination.appendChild(li);
+
+        }
+
+    }
+
+
+    for (
+        let page = start;
+        page <= end;
+        page++
+    ) {
+
+        addPage(
+            page,
+            page,
+            false,
+            page === currentPage
+        );
+
+    }
+
+
+    if (end < totalPages) {
+
+        if (end < totalPages - 1) {
+
+            const li =
+                document.createElement("li");
+
+            li.className =
+                "page-item disabled";
+
+            li.innerHTML =
+                '<span class="page-link">...</span>';
+
+            pagination.appendChild(li);
+
+        }
+
+
+        addPage(
+            totalPages,
+            totalPages,
+            false,
+            currentPage === totalPages
+        );
+
+    }
+
+
+    addPage(
+        '<i class="bi bi-chevron-right"></i>',
+        currentPage + 1,
+        currentPage === totalPages
+    );
+
+}
+
+
+/* ============================================
+   FILTER
+============================================ */
+
+function applyFilters() {
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================
+   RESET
+============================================ */
+
+function resetFilters() {
+
+    document.getElementById(
+        "keyword"
+    ).value = "";
+
+    document.getElementById(
+        "statusFilter"
+    ).value = "";
+
+    document.getElementById(
+        "typeFilter"
+    ).value = "";
+
+    document.getElementById(
+        "creatorFilter"
+    ).value = "";
+
+    document.getElementById(
+        "processorFilter"
+    ).value = "";
+
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================
+   PAGE SIZE
+============================================ */
+
+function changePageSize() {
+
+    pageSize =
+        parseInt(
+            document.getElementById(
+                "pageSize"
+            ).value
+        );
+
+    currentPage = 1;
+
+    renderTable();
+
+}
+
+
+/* ============================================
+   SEARCH ENTER
+============================================ */
+
+document
+    .getElementById("keyword")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                applyFilters();
+
+            }
+
+        }
+    );
+
+
+/* ============================================
+   INIT
+============================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        prepareRows();
+
+        renderTable();
+
+    }
+);
+
+
+/* ============================================
+   EXPORT
+============================================ */
+
+function exportExcel() {
+
+    alert(
+        "Chức năng Xuất Excel sẽ được kết nối ở bước tiếp theo."
+    );
+
+}
+
+</script>
+
+</body>
+</html>
+

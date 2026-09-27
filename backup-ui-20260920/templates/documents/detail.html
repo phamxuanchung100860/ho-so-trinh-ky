@@ -1,0 +1,2336 @@
+﻿<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Chi tiết hồ sơ')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- =========================================================
+         TOPBAR / SIDEBAR
+         ========================================================= -->
+
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+
+    <!-- =========================================================
+         MAIN
+         ========================================================= -->
+
+    <main class="app-main">
+
+        <div class="app-content">
+
+            <div class="container-fluid py-3">
+
+
+                <!-- =================================================
+                     PAGE HEADER
+                     ================================================= -->
+
+                <div class="detail-hero mb-4">
+
+                    <div class="detail-hero-main">
+
+                        <div class="detail-breadcrumb">
+
+                            <a th:href="@{/documents}"
+                               class="detail-back-link">
+
+                                <i class="bi bi-arrow-left"></i>
+
+                                Danh sách hồ sơ
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="detail-code-row">
+
+                            <span class="detail-document-code"
+                                  th:text="${document.documentCode}">
+                                HS000
+                            </span>
+
+                            <span class="badge detail-status-badge"
+                                  th:classappend="${'text-bg-' + document.status.css}"
+                                  th:text="${document.status.label}">
+                                Đang xử lý
+                            </span>
+
+                        </div>
+
+
+                        <h1 class="detail-title"
+                            th:text="${document.title}">
+                            Chi tiết hồ sơ
+                        </h1>
+
+
+                        <p class="detail-subtitle">
+
+                            Theo dõi thông tin, tài liệu và toàn bộ
+                            quy trình trình ký của hồ sơ.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-hero-actions">
+
+                        <a th:href="@{/documents}"
+                           class="btn btn-outline-secondary">
+
+                            <i class="bi bi-arrow-left me-1"></i>
+
+                            Quay lại
+
+                        </a>
+
+
+                        <a th:href="@{'/documents/' + ${document.id} + '/print'}"
+                           target="_blank"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-printer me-1"></i>
+
+                            In hồ sơ
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     SUMMARY CARDS
+                     ================================================= -->
+
+                <div class="row g-3 mb-4">
+
+                    <!-- STATUS -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="detail-summary-card">
+
+                            <div class="detail-summary-icon blue">
+
+                                <i class="bi bi-activity"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="detail-summary-label">
+                                    Trạng thái
+                                </div>
+
+                                <div class="detail-summary-value"
+                                     th:text="${document.status.label}">
+                                    Đang xử lý
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CREATOR -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="detail-summary-card">
+
+                            <div class="detail-summary-icon purple">
+
+                                <i class="bi bi-person"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="detail-summary-label">
+                                    Người lập
+                                </div>
+
+                                <div class="detail-summary-value"
+                                     th:text="${document.createdBy.fullName}">
+                                    Nguyễn Văn A
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CREATED -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="detail-summary-card">
+
+                            <div class="detail-summary-icon orange">
+
+                                <i class="bi bi-calendar3"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="detail-summary-label">
+                                    Ngày tạo
+                                </div>
+
+                                <div class="detail-summary-value">
+
+                                    <span th:text="${#temporals.format(document.createdAt,'dd/MM/yyyy')}">
+                                        15/09/2026
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FLOW -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="detail-summary-card">
+
+                            <div class="detail-summary-icon green">
+
+                                <i class="bi bi-diagram-3"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="detail-summary-label">
+                                    Số bước trình ký
+                                </div>
+
+                                <div class="detail-summary-value">
+
+                                    <span th:text="${#lists.size(flows)}">
+                                        3
+                                    </span>
+
+                                    bước
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     MAIN GRID
+                     ================================================= -->
+
+                <div class="row g-4">
+
+
+                    <!-- =================================================
+                         LEFT COLUMN
+                         ================================================= -->
+
+                    <div class="col-xl-8">
+
+
+                        <!-- =============================================
+                             WORKFLOW
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-diagram-3 me-2"></i>
+
+                                        Quy trình trình ký
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Tiến độ xử lý hồ sơ theo từng bước
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <div th:if="${#lists.isEmpty(flows)}"
+                                     class="detail-empty">
+
+                                    <div class="detail-empty-icon">
+
+                                        <i class="bi bi-diagram-3"></i>
+
+                                    </div>
+
+                                    <div class="detail-empty-title">
+                                        Chưa thiết lập quy trình
+                                    </div>
+
+                                    <div class="detail-empty-text">
+                                        Hồ sơ chưa có người ký.
+                                    </div>
+
+                                </div>
+
+
+                                <div th:unless="${#lists.isEmpty(flows)}"
+                                     class="approval-stepper">
+
+                                    <th:block th:each="f,st : ${flows}">
+
+                                        <div class="approval-step"
+                                             th:classappend="${f.status.name() == 'SIGNED' ? 'is-completed' :
+                                             (f.status.name() == 'SIGNING' ? 'is-current' :
+                                             (f.status.name() == 'REJECTED' ? 'is-rejected' :
+                                             (f.status.name() == 'RETURNED' ? 'is-returned' : 'is-waiting')))}">
+
+
+                                            <div class="approval-step-number">
+
+                                                <i th:class="${f.status.name() == 'SIGNED'
+                                                    ? 'bi bi-check-lg'
+                                                    : (f.status.name() == 'SIGNING'
+                                                    ? 'bi bi-pen-fill'
+                                                    : (f.status.name() == 'REJECTED'
+                                                    ? 'bi bi-x-lg'
+                                                    : (f.status.name() == 'RETURNED'
+                                                    ? 'bi bi-arrow-return-left'
+                                                    : 'bi bi-clock')))}">
+                                                </i>
+
+                                            </div>
+
+
+                                            <div class="approval-step-content">
+
+                                                <div class="approval-step-top">
+
+                                                    <span class="approval-step-label">
+
+                                                        Bước
+                                                        <span th:text="${f.stepOrder}">
+                                                            1
+                                                        </span>
+
+                                                    </span>
+
+
+                                                    <span class="badge"
+                                                          th:classappend="${'text-bg-' + f.status.css}"
+                                                          th:text="${f.status.label}">
+                                                        Chờ ký
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="approval-step-name"
+                                                     th:text="${f.approver.fullName}">
+                                                    Trần Thị B
+                                                </div>
+
+
+                                                <div class="approval-step-role"
+                                                     th:text="${f.approver.position}">
+                                                    Trưởng phòng
+                                                </div>
+
+
+                                                <div class="approval-step-meta">
+
+                                                    <span th:if="${f.sentAt != null}">
+
+                                                        <i class="bi bi-send me-1"></i>
+
+                                                        Gửi lúc
+
+                                                        <span th:text="${#temporals.format(f.sentAt,'dd/MM/yyyy HH:mm')}">
+                                                            15/09/2026 14:20
+                                                        </span>
+
+                                                    </span>
+
+
+                                                    <span th:if="${f.processedAt != null}">
+
+                                                        <i class="bi bi-check2-circle me-1"></i>
+
+                                                        Xử lý lúc
+
+                                                        <span th:text="${#temporals.format(f.processedAt,'dd/MM/yyyy HH:mm')}">
+                                                            15/09/2026 15:20
+                                                        </span>
+
+                                                    </span>
+
+
+                                                    <span th:if="${f.status.name() == 'WAITING'}"
+                                                          class="step-next-label">
+
+                                                        <i class="bi bi-arrow-right-circle me-1"></i>
+
+                                                        Người tiếp theo
+
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div th:if="${!st.last}"
+                                             class="approval-connector">
+
+                                            <div class="approval-connector-line"
+                                                 th:classappend="${f.status.name() == 'SIGNED' ? 'is-done' : ''}">
+                                            </div>
+
+                                        </div>
+
+                                    </th:block>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             DOCUMENT INFORMATION
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-file-text me-2"></i>
+
+                                        Thông tin hồ sơ
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Thông tin cơ bản của hồ sơ
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <div class="detail-info-grid">
+
+
+                                    <div class="detail-info-item">
+
+                                        <div class="detail-info-label">
+                                            Mã hồ sơ
+                                        </div>
+
+                                        <div class="detail-info-value">
+
+                                            <span th:text="${document.documentCode}">
+                                                HS20260915001
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-info-item">
+
+                                        <div class="detail-info-label">
+                                            Người lập hồ sơ
+                                        </div>
+
+                                        <div class="detail-info-person">
+
+                                            <div class="detail-avatar">
+
+                                                <span th:text="${#strings.substring(document.createdBy.fullName,0,1)}">
+                                                    A
+                                                </span>
+
+                                            </div>
+
+                                            <div>
+
+                                                <div class="detail-info-value"
+                                                     th:text="${document.createdBy.fullName}">
+                                                    Nguyễn Văn A
+                                                </div>
+
+                                                <div class="detail-info-muted"
+                                                     th:text="${document.createdBy.position}">
+                                                    Nhân viên
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-info-item">
+
+                                        <div class="detail-info-label">
+                                            Ngày tạo
+                                        </div>
+
+                                        <div class="detail-info-value"
+                                             th:text="${#temporals.format(document.createdAt,'dd/MM/yyyy HH:mm')}">
+                                            15/09/2026 14:20
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-info-item">
+
+                                        <div class="detail-info-label">
+                                            Trạng thái
+                                        </div>
+
+                                        <div>
+
+                                            <span class="badge"
+                                                  th:classappend="${'text-bg-' + document.status.css}"
+                                                  th:text="${document.status.label}">
+                                                Đang xử lý
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-info-item detail-info-full">
+
+                                        <div class="detail-info-label">
+                                            Tiêu đề
+                                        </div>
+
+                                        <div class="detail-info-value"
+                                             th:text="${document.title}">
+                                            Hồ sơ đề nghị phê duyệt kế hoạch tài chính
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="detail-info-item detail-info-full">
+
+                                        <div class="detail-info-label">
+                                            Mô tả
+                                        </div>
+
+                                        <div class="detail-description"
+                                             th:text="${document.description ?: 'Không có mô tả cho hồ sơ này.'}">
+                                            Không có mô tả.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             FILES
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-paperclip me-2"></i>
+
+                                        File đính kèm
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Tài liệu thuộc hồ sơ
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="detail-file-count"
+                                      th:text="${#lists.size(document.files)} + ' file'">
+                                    2 file
+                                </span>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <div th:if="${#lists.isEmpty(document.files)}"
+                                     class="detail-empty detail-empty-small">
+
+                                    <div class="detail-empty-icon">
+
+                                        <i class="bi bi-file-earmark-x"></i>
+
+                                    </div>
+
+                                    <div class="detail-empty-title">
+                                        Chưa có file đính kèm
+                                    </div>
+
+                                </div>
+
+
+                                <div th:each="f : ${document.files}"
+                                     class="detail-file-item">
+
+
+                                    <div class="detail-file-main">
+
+                                        <div class="detail-file-icon">
+
+                                            <i class="bi bi-file-earmark-text"></i>
+
+                                        </div>
+
+
+                                        <div class="detail-file-info">
+
+                                            <div class="detail-file-name"
+                                                 th:text="${f.fileName}">
+                                                ke-hoach-tai-chinh.pdf
+                                            </div>
+
+
+                                            <div class="detail-file-meta">
+
+                                                <span>
+
+                                                    Phiên bản
+
+                                                    <strong th:text="${f.version}">
+                                                        1
+                                                    </strong>
+
+                                                </span>
+
+                                                <span class="detail-file-dot">
+                                                    •
+                                                </span>
+
+                                                <span th:text="${#numbers.formatDecimal(f.fileSize/1024.0,1,1)} + ' KB'">
+                                                    245.5 KB
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       th:href="@{'/documents/files/' + ${f.id} + '/download'}"
+                                       target="_blank">
+
+                                        <i class="bi bi-eye me-1"></i>
+
+                                        Xem file
+
+                                    </a>
+
+                                </div>
+
+
+                                <!-- UPLOAD -->
+
+                                <form th:if="${document.status.name() == 'DRAFT' || document.status.name() == 'RETURNED'}"
+                                      class="detail-upload mt-3 no-print"
+                                      method="post"
+                                      enctype="multipart/form-data"
+                                      th:action="@{'/documents/' + ${document.id} + '/upload'}">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+
+                                    <div class="detail-upload-label">
+
+                                        <i class="bi bi-cloud-arrow-up me-1"></i>
+
+                                        Thêm phiên bản mới
+
+                                    </div>
+
+                                    <div class="input-group">
+
+                                        <input type="file"
+                                               name="file"
+                                               class="form-control"
+                                               required>
+
+                                        <button type="submit"
+                                                class="btn btn-outline-primary">
+
+                                            <i class="bi bi-upload me-1"></i>
+
+                                            Upload
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             ACTIVITY TIMELINE
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-clock-history me-2"></i>
+
+                                        Lịch sử thao tác
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Toàn bộ hoạt động phát sinh trên hồ sơ
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <div th:if="${#lists.isEmpty(actions)}"
+                                     class="detail-empty detail-empty-small">
+
+                                    <div class="detail-empty-icon">
+
+                                        <i class="bi bi-clock-history"></i>
+
+                                    </div>
+
+                                    <div class="detail-empty-title">
+                                        Chưa có lịch sử thao tác
+                                    </div>
+
+                                </div>
+
+
+                                <div th:unless="${#lists.isEmpty(actions)}"
+                                     class="activity-timeline">
+
+                                    <div class="activity-item"
+                                         th:each="a : ${actions}">
+
+                                        <div class="activity-marker">
+
+                                            <i class="bi bi-check2"></i>
+
+                                        </div>
+
+
+                                        <div class="activity-content">
+
+                                            <div class="activity-top">
+
+                                                <div class="activity-title">
+
+                                                    <strong th:text="${a.user.fullName}">
+                                                        Nguyễn Văn A
+                                                    </strong>
+
+                                                    <span class="activity-separator">
+                                                        •
+                                                    </span>
+
+                                                    <span th:text="${a.action.label}">
+                                                        Trình ký
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div class="activity-time"
+                                                     th:text="${#temporals.format(a.actionTime,'dd/MM/yyyy HH:mm:ss')}">
+                                                    15/09/2026 14:20:00
+                                                </div>
+
+                                            </div>
+
+
+                                            <div th:if="${a.comment != null && !#strings.isEmpty(a.comment)}"
+                                                 class="activity-comment"
+                                                 th:text="${a.comment}">
+                                                Đồng ý phê duyệt hồ sơ.
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         RIGHT COLUMN
+                         ================================================= -->
+
+                    <div class="col-xl-4">
+
+
+                        <!-- =============================================
+                             CURRENT STATUS
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-person-check me-2"></i>
+
+                                        Trạng thái xử lý
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <!-- CURRENT APPROVER -->
+
+                                <div th:if="${currentFlow != null}"
+                                     class="current-approver-box">
+
+                                    <div class="current-approver-status">
+
+                                        <span class="current-status-dot"></span>
+
+                                        ĐANG XỬ LÝ
+
+                                    </div>
+
+
+                                    <div class="current-approver-avatar">
+
+                                        <span th:text="${#strings.substring(currentFlow.approver.fullName,0,1)}">
+                                            B
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="current-approver-name"
+                                         th:text="${currentFlow.approver.fullName}">
+                                        Trần Thị B
+                                    </div>
+
+
+                                    <div class="current-approver-role"
+                                         th:text="${currentFlow.approver.position}">
+                                        Trưởng phòng
+                                    </div>
+
+
+                                    <div class="current-approver-step">
+
+                                        Bước
+
+                                        <strong th:text="${currentFlow.stepOrder}">
+                                            1
+                                        </strong>
+
+                                        trong
+
+                                        <strong th:text="${#lists.size(flows)}">
+                                            3
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- COMPLETED -->
+
+                                <div th:if="${currentFlow == null && document.status.name() == 'COMPLETED'}"
+                                     class="status-result success">
+
+                                    <div class="status-result-icon">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="status-result-title">
+                                            Hồ sơ đã hoàn tất
+                                        </div>
+
+                                        <div class="status-result-text">
+                                            Tất cả các bước ký đã hoàn thành.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- REJECTED -->
+
+                                <div th:if="${currentFlow == null && document.status.name() == 'REJECTED'}"
+                                     class="status-result danger">
+
+                                    <div class="status-result-icon">
+
+                                        <i class="bi bi-x-circle-fill"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="status-result-title">
+                                            Hồ sơ bị từ chối
+                                        </div>
+
+                                        <div class="status-result-text">
+                                            Quy trình đã dừng xử lý.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- RETURNED -->
+
+                                <div th:if="${currentFlow == null && document.status.name() == 'RETURNED'}"
+                                     class="status-result warning">
+
+                                    <div class="status-result-icon">
+
+                                        <i class="bi bi-arrow-return-left"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="status-result-title">
+                                            Hồ sơ được trả lại
+                                        </div>
+
+                                        <div class="status-result-text">
+                                            Cần bổ sung hoặc chỉnh sửa hồ sơ.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- DRAFT -->
+
+                                <div th:if="${currentFlow == null && document.status.name() == 'DRAFT'}"
+                                     class="status-result info">
+
+                                    <div class="status-result-icon">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="status-result-title">
+                                            Hồ sơ đang ở trạng thái nháp
+                                        </div>
+
+                                        <div class="status-result-text">
+                                            Hồ sơ chưa được trình ký.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             SIGNERS
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-people me-2"></i>
+
+                                        Người tham gia ký
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Trạng thái từng người ký
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body p-0">
+
+                                <div th:if="${#lists.isEmpty(flows)}"
+                                     class="detail-empty detail-empty-small">
+
+                                    <div class="detail-empty-title">
+                                        Chưa có người ký
+                                    </div>
+
+                                </div>
+
+
+                                <div th:each="f : ${flows}"
+                                     class="signer-item">
+
+
+                                    <div class="detail-avatar"
+                                         th:classappend="${f.status.name() == 'SIGNED' ? 'avatar-success' :
+                                         (f.status.name() == 'SIGNING' ? 'avatar-primary' : '')}">
+
+                                        <span th:text="${#strings.substring(f.approver.fullName,0,1)}">
+                                            A
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="signer-info">
+
+                                        <div class="signer-name"
+                                             th:text="${f.approver.fullName}">
+                                            Trần Thị B
+                                        </div>
+
+                                        <div class="signer-role"
+                                             th:text="${f.approver.position}">
+                                            Trưởng phòng
+                                        </div>
+
+                                        <div th:if="${f.status.name() == 'WAITING'}"
+                                             class="signer-next">
+
+                                            <i class="bi bi-arrow-right-circle me-1"></i>
+
+                                            Người tiếp theo
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <span class="badge signer-status"
+                                          th:classappend="${'text-bg-' + f.status.css}"
+                                          th:text="${f.status.label}">
+                                        Chờ ký
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             ACTIONS
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4 no-print"
+                             th:if="${currentFlow != null}"
+                             sec:authorize="hasRole('APPROVER')">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-lightning-charge me-2"></i>
+
+                                        Xử lý hồ sơ
+
+                                    </div>
+
+                                    <div class="detail-card-subtitle">
+
+                                        Thao tác trên bước ký hiện tại
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+
+                                <textarea id="comment"
+                                          class="form-control detail-comment"
+                                          rows="4"
+                                          placeholder="Nhập ý kiến hoặc nội dung xử lý..."></textarea>
+
+
+                                <div class="d-grid gap-2 mt-3">
+
+
+                                    <a class="btn btn-primary btn-lg"
+                                       th:href="@{'/documents/' + ${document.id} + '/sign'}">
+
+                                        <i class="bi bi-pen-fill me-2"></i>
+
+                                        Mở màn hình ký
+
+                                    </a>
+
+
+                                    <button type="button"
+                                            class="btn btn-success"
+                                            onclick="submitAction('approve')">
+
+                                        <i class="bi bi-check-circle me-2"></i>
+
+                                        Ký / Phê duyệt
+
+                                    </button>
+
+
+                                    <div class="row g-2">
+
+                                        <div class="col-6">
+
+                                            <button type="button"
+                                                    class="btn btn-warning w-100"
+                                                    onclick="submitAction('return')">
+
+                                                <i class="bi bi-arrow-return-left me-1"></i>
+
+                                                Trả lại
+
+                                            </button>
+
+                                        </div>
+
+
+                                        <div class="col-6">
+
+                                            <button type="button"
+                                                    class="btn btn-outline-danger w-100"
+                                                    onclick="submitAction('reject')">
+
+                                                <i class="bi bi-x-circle me-1"></i>
+
+                                                Từ chối
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button type="button"
+                                            class="btn btn-outline-primary"
+                                            onclick="submitAction('note')">
+
+                                        <i class="bi bi-chat-left-text me-2"></i>
+
+                                        Ghi chú
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             CREATOR ACTIONS
+                             ============================================= -->
+
+                        <div class="card detail-card mb-4 no-print"
+                             th:if="${document.status.name() == 'DRAFT' || document.status.name() == 'RETURNED'}">
+
+                            <div class="card-header detail-card-header">
+
+                                <div>
+
+                                    <div class="detail-card-title">
+
+                                        <i class="bi bi-send me-2"></i>
+
+                                        Thao tác hồ sơ
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <a class="btn btn-outline-primary w-100"
+                                   th:href="@{'/documents/' + ${document.id} + '/wizard?step=3'}">
+
+                                    <i class="bi bi-diagram-3 me-2"></i>
+
+                                    Thiết lập luồng ký
+
+                                </a>
+
+
+                                <form class="mt-2"
+                                      method="post"
+                                      th:action="@{'/documents/' + ${document.id} + '/submit'}">
+
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}">
+
+                                    <button type="submit"
+                                            class="btn btn-success w-100">
+
+                                        <i class="bi bi-send-fill me-2"></i>
+
+                                        Trình ký hồ sơ
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             PRINT
+                             ============================================= -->
+
+                        <div class="card detail-card no-print">
+
+                            <div class="card-body">
+
+                                <a class="btn btn-outline-secondary w-100"
+                                   th:href="@{'/documents/' + ${document.id} + '/print'}"
+                                   target="_blank">
+
+                                    <i class="bi bi-printer me-2"></i>
+
+                                    In phiếu trình ký
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+         ========================================================= -->
+
+    <footer class="app-footer">
+
+        Phần mềm quản lý và trình ký hồ sơ
+
+    </footer>
+
+
+    <div th:replace="~{fragments/layout :: scripts}"></div>
+
+</div>
+
+
+
+<!-- =============================================================
+     JAVASCRIPT
+     ============================================================= -->
+
+<script th:inline="javascript">
+
+function submitAction(action) {
+
+    const id =
+        [[${currentFlow != null ? currentFlow.id : 0}]];
+
+    const commentElement =
+        document.getElementById("comment");
+
+    const comment =
+        commentElement
+            ? commentElement.value
+            : "";
+
+    if (!id) {
+
+        alert("Không xác định được bước ký hiện tại.");
+
+        return;
+    }
+
+
+    let url =
+        "/flows/" + id + "/" + action;
+
+
+    const form =
+        document.createElement("form");
+
+    form.method = "post";
+
+    form.action = url;
+
+
+    const csrfName =
+        [[${_csrf.parameterName}]];
+
+    const csrfToken =
+        [[${_csrf.token}]];
+
+
+    const csrf =
+        document.createElement("input");
+
+    csrf.type = "hidden";
+
+    csrf.name = csrfName;
+
+    csrf.value = csrfToken;
+
+    form.appendChild(csrf);
+
+
+    const commentInput =
+        document.createElement("input");
+
+    commentInput.type = "hidden";
+
+    commentInput.name = "comment";
+
+    commentInput.value = comment;
+
+    form.appendChild(commentInput);
+
+
+    document.body.appendChild(form);
+
+    form.submit();
+
+}
+
+</script>
+
+
+
+<!-- =============================================================
+     DETAIL PAGE CSS
+     ============================================================= -->
+
+<style>
+
+.detail-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 26px 28px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid var(--app-border, #e5e7eb);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .05);
+}
+
+.detail-hero-main {
+    min-width: 0;
+}
+
+.detail-breadcrumb {
+    margin-bottom: 12px;
+}
+
+.detail-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.detail-back-link:hover {
+    color: #2563eb;
+}
+
+.detail-code-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.detail-document-code {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.detail-status-badge {
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.detail-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+.detail-subtitle {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.detail-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.detail-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 96px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .04);
+}
+
+.detail-summary-icon {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    font-size: 21px;
+}
+
+.detail-summary-icon.blue {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.detail-summary-icon.purple {
+    color: #7c3aed;
+    background: #f5f3ff;
+}
+
+.detail-summary-icon.orange {
+    color: #ea580c;
+    background: #fff7ed;
+}
+
+.detail-summary-icon.green {
+    color: #16a34a;
+    background: #f0fdf4;
+}
+
+.detail-summary-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.detail-summary-value {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.detail-card {
+    overflow: hidden;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 16px !important;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .045) !important;
+}
+
+.detail-card-header {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: #fff !important;
+    border-bottom: 1px solid #eef2f7 !important;
+}
+
+.detail-card-title {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.detail-card-title i {
+    color: #2563eb;
+}
+
+.detail-card-subtitle {
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.detail-file-count {
+    padding: 6px 10px;
+    color: #475569;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   STEPPER
+   ============================================================ */
+
+.approval-stepper {
+    position: relative;
+    padding: 5px 0;
+}
+
+.approval-step {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 1px solid #edf1f5;
+    border-radius: 14px;
+    background: #fff;
+    transition: .2s ease;
+}
+
+.approval-step:hover {
+    border-color: #dbe5f1;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, .04);
+}
+
+.approval-step-number {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #64748b;
+    background: #f1f5f9;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.approval-step.is-completed .approval-step-number {
+    color: #fff;
+    background: #16a34a;
+}
+
+.approval-step.is-current .approval-step-number {
+    color: #fff;
+    background: #2563eb;
+    box-shadow: 0 0 0 5px #eff6ff;
+}
+
+.approval-step.is-rejected .approval-step-number {
+    color: #fff;
+    background: #dc2626;
+}
+
+.approval-step.is-returned .approval-step-number {
+    color: #fff;
+    background: #d97706;
+}
+
+.approval-step-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.approval-step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.approval-step-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.approval-step-name {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.approval-step-role {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.approval-step-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.step-next-label {
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.approval-connector {
+    height: 24px;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 38px;
+}
+
+.approval-connector-line {
+    width: 2px;
+    height: 24px;
+    background: #e2e8f0;
+}
+
+.approval-connector-line.is-done {
+    background: #86efac;
+}
+
+
+/* ============================================================
+   INFORMATION
+   ============================================================ */
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.detail-info-item {
+    min-width: 0;
+}
+
+.detail-info-full {
+    grid-column: 1 / -1;
+}
+
+.detail-info-label {
+    margin-bottom: 6px;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.detail-info-value {
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.detail-info-muted {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.detail-info-person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-avatar {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #2563eb;
+    background: #eff6ff;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.detail-description {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+
+/* ============================================================
+   FILES
+   ============================================================ */
+
+.detail-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px;
+    margin-bottom: 10px;
+    background: #fafcff;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+}
+
+.detail-file-main {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.detail-file-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #2563eb;
+    background: #eff6ff;
+    font-size: 19px;
+}
+
+.detail-file-info {
+    min-width: 0;
+}
+
+.detail-file-name {
+    overflow: hidden;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detail-file-meta {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.detail-file-dot {
+    color: #cbd5e1;
+}
+
+.detail-upload {
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+}
+
+.detail-upload-label {
+    margin-bottom: 8px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   CURRENT APPROVER
+   ============================================================ */
+
+.current-approver-box {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(145deg, #eff6ff, #f8fbff);
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+}
+
+.current-approver-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+}
+
+.current-status-dot {
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #2563eb;
+    box-shadow: 0 0 0 4px #dbeafe;
+}
+
+.current-approver-avatar {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 17px auto 10px;
+    border-radius: 50%;
+    color: #2563eb;
+    background: #fff;
+    border: 2px solid #bfdbfe;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, .12);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.current-approver-name {
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.current-approver-role {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.current-approver-step {
+    margin-top: 12px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   STATUS RESULT
+   ============================================================ */
+
+.status-result {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.status-result.success {
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.status-result.danger {
+    color: #991b1b;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.status-result.warning {
+    color: #92400e;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+}
+
+.status-result.info {
+    color: #1e40af;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.status-result-icon {
+    font-size: 19px;
+}
+
+.status-result-title {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.status-result-text {
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1.5;
+    opacity: .8;
+}
+
+
+/* ============================================================
+   SIGNERS
+   ============================================================ */
+
+.signer-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.signer-item:last-child {
+    border-bottom: 0;
+}
+
+.signer-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.signer-name {
+    overflow: hidden;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.signer-role {
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.signer-next {
+    margin-top: 4px;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.avatar-success {
+    color: #15803d;
+    background: #f0fdf4;
+}
+
+.avatar-primary {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.signer-status {
+    flex-shrink: 0;
+    font-size: 10px;
+}
+
+
+/* ============================================================
+   ACTION
+   ============================================================ */
+
+.detail-comment {
+    resize: vertical;
+    min-height: 100px;
+    border-color: #dbe2ea;
+}
+
+.detail-comment:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px #eff6ff;
+}
+
+
+/* ============================================================
+   ACTIVITY TIMELINE
+   ============================================================ */
+
+.activity-timeline {
+    position: relative;
+    padding-left: 4px;
+}
+
+.activity-item {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    padding: 0 0 22px;
+}
+
+.activity-item:last-child {
+    padding-bottom: 0;
+}
+
+.activity-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: 0;
+    width: 1px;
+    background: #e2e8f0;
+}
+
+.activity-marker {
+    position: relative;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #2563eb;
+    background: #eff6ff;
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 1px #bfdbfe;
+    font-size: 11px;
+}
+
+.activity-content {
+    min-width: 0;
+    flex: 1;
+    padding-top: 2px;
+}
+
+.activity-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.activity-title {
+    color: #334155;
+    font-size: 13px;
+}
+
+.activity-separator {
+    margin: 0 4px;
+    color: #cbd5e1;
+}
+
+.activity-time {
+    flex-shrink: 0;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.activity-comment {
+    margin-top: 7px;
+    padding: 9px 11px;
+    color: #64748b;
+    background: #f8fafc;
+    border-left: 3px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.detail-empty {
+    padding: 38px 20px;
+    text-align: center;
+}
+
+.detail-empty-small {
+    padding: 26px 20px;
+}
+
+.detail-empty-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    border-radius: 14px;
+    color: #64748b;
+    background: #f1f5f9;
+    font-size: 20px;
+}
+
+.detail-empty-title {
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.detail-empty-text {
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 992px) {
+
+    .detail-hero {
+        flex-direction: column;
+    }
+
+    .detail-hero-actions {
+        width: 100%;
+    }
+
+    .detail-hero-actions .btn {
+        flex: 1;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-info-full {
+        grid-column: auto;
+    }
+
+    .activity-top {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-file-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .detail-file-item .btn {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .detail-hero {
+        padding: 20px;
+    }
+
+    .detail-title {
+        font-size: 22px;
+    }
+
+    .detail-hero-actions {
+        flex-direction: column;
+    }
+
+    .detail-hero-actions .btn {
+        width: 100%;
+    }
+
+    .detail-summary-card {
+        min-height: 82px;
+    }
+
+    .approval-step {
+        padding: 13px;
+    }
+
+    .approval-step-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+}
+
+@media print {
+
+    .detail-hero-actions,
+    .no-print {
+        display: none !important;
+    }
+
+    .detail-hero {
+        box-shadow: none !important;
+        border: 0 !important;
+        padding: 0 !important;
+    }
+
+    .detail-card,
+    .detail-summary-card {
+        box-shadow: none !important;
+    }
+
+}
+
+</style>
+
+</body>
+</html>

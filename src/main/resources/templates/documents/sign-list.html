@@ -1,0 +1,436 @@
+﻿<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Trình ký')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main sign-list-page">
+
+        <!-- CONTENT HEADER -->
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <h3 class="mb-0">
+                            <i class="bi bi-pen me-2"></i>
+                            Trình ký
+                        </h3>
+
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <ol class="breadcrumb float-sm-end mb-0">
+
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/}">
+                                    Trang chủ
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active">
+                                Trình ký
+                            </li>
+
+                        </ol>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <!-- TIÊU ĐỀ -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div>
+
+                        <h4 class="sign-list-title mb-1">
+                            Danh sách hồ sơ trình ký
+                        </h4>
+
+                        <div class="sign-list-subtitle">Danh sách hồ sơ đang trong quy trình trình ký</div>
+
+                    </div>
+
+                    <a th:href="@{/documents/new}"
+                       class="btn btn-primary">
+
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Tạo hồ sơ
+
+                    </a>
+
+                </div>
+
+
+                <!-- BỘ LỌC -->
+                <div class="sign-filter-card">
+
+                    <div class="sign-filter-header">
+
+                        <h5 class="card-title mb-0">
+
+                            <i class="bi bi-funnel me-1"></i>
+                            Bộ lọc
+
+                        </h5>
+
+                    </div>
+
+                    <div class="sign-filter-body">
+
+                        <form method="get"
+                              th:action="@{/trinh-ky}">
+
+                            <div class="row g-3">
+
+                                <div class="col-md-5">
+
+                                    <label class="form-label">
+                                        Từ khóa
+                                    </label>
+
+                                    <input type="text"
+                                           name="keyword"
+                                           class="form-control"
+                                           th:value="${param.keyword}"
+                                           placeholder="Mã hồ sơ, tên hồ sơ...">
+
+                                </div>
+
+
+                                <div class="col-md-3">
+
+                                    <label class="form-label">
+                                        Trạng thái
+                                    </label>
+
+                                    <select name="status"
+                                            class="form-select">
+
+                                        <option value="">
+                                            Tất cả trạng thái
+                                        </option>
+
+                                        <option value="WAITING_SIGN"
+                                                th:selected="${param.status != null and param.status[0] == 'WAITING_SIGN'}">
+                                            Chờ ký
+                                        </option>
+
+                                        <option value="SIGNING"
+                                                th:selected="${param.status != null and param.status[0] == 'SIGNING'}">
+                                            Đang xử lý
+                                        </option>
+
+                                        <option value="RETURNED"
+                                                th:selected="${param.status != null and param.status[0] == 'RETURNED'}">
+                                            Trả lại
+                                        </option>
+
+                                        <option value="REJECTED"
+                                                th:selected="${param.status != null and param.status[0] == 'REJECTED'}">
+                                            Từ chối
+                                        </option>
+
+                                        <option value="COMPLETED"
+                                                th:selected="${param.status != null and param.status[0] == 'COMPLETED'}">
+                                            Hoàn tất
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="col-md-2 d-flex align-items-end">
+
+                                    <button type="submit"
+                                            class="btn btn-primary w-100">
+
+                                        <i class="bi bi-search me-1"></i>
+                                        Tìm kiếm
+
+                                    </button>
+
+                                </div>
+
+
+                                <div class="col-md-2 d-flex align-items-end">
+
+                                    <a th:href="@{/trinh-ky}"
+                                       class="btn btn-outline-secondary w-100">
+
+                                        <i class="bi bi-arrow-clockwise me-1"></i>
+                                        Làm mới
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DANH SÁCH -->
+                <div class="sign-table-card">
+    <div class="sign-table-header">
+
+                        <h5 class="card-title mb-0">
+
+                            <i class="bi bi-file-earmark-text me-1"></i>
+                            Hồ sơ trình ký
+
+                        </h5>
+
+                    </div>
+
+
+                    <div class="sign-table-body">
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover table-striped align-middle mb-0">
+
+                                <thead class="table-light">
+
+                                <tr>
+
+                                    <th style="width: 140px;">
+                                        Mã hồ sơ
+                                    </th>
+
+                                    <th>
+                                        Tên hồ sơ
+                                    </th>
+
+                                    <th>
+                                        Người lập
+                                    </th>
+
+                                    <th>
+                                        Trạng thái
+                                    </th>
+
+                                    <th>
+                                        Ngày tạo
+                                    </th>
+
+                                    <th class="text-center"
+                                        style="width: 120px;">
+                                        Thao tác
+                                    </th>
+
+                                </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                <!-- CÓ DỮ LIỆU -->
+
+                                <tr th:each="document : ${documents}">
+
+                                    <!-- MÃ -->
+                                    <td>
+
+                                        <strong th:text="${document.documentCode}">
+                                            HS20260915001
+                                        </strong>
+
+                                    </td>
+
+
+                                    <!-- TÊN -->
+                                    <td>
+
+                                        <div class="fw-semibold"
+                                             th:text="${document.title}">
+                                            Tên hồ sơ
+                                        </div>
+
+                                        <small class="text-muted"
+                                               th:if="${document.description != null}"
+                                               th:text="${document.description}">
+                                        </small>
+
+                                    </td>
+
+
+                                    <!-- NGƯỜI LẬP -->
+                                    <td>
+
+                                        <span th:if="${document.createdBy != null}"
+                                              th:text="${document.createdBy.fullName}">
+                                            Nguyễn Văn A
+                                        </span>
+
+                                        <span th:unless="${document.createdBy != null}"
+                                              class="text-muted">
+                                            Không xác định
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- TRẠNG THÁI -->
+
+                                    <td>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'DRAFT'}"
+                                              class="badge bg-secondary">
+                                            Nháp
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'WAITING_SIGN'}"
+                                              class="badge bg-warning text-dark">
+                                            Chờ ký
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'SIGNING'}"
+                                              class="badge bg-primary">
+                                            Đang xử lý
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'SIGNED'}"
+                                              class="badge bg-info">
+                                            Đã ký
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'RETURNED'}"
+                                              class="badge bg-warning text-dark">
+                                            Trả lại
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'REJECTED'}"
+                                              class="badge bg-danger">
+                                            Từ chối
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'COMPLETED'}"
+                                              class="badge bg-success">
+                                            Hoàn tất
+                                        </span>
+
+                                        <span th:if="${document.status != null and document.status.name() == 'CANCELLED'}"
+                                              class="badge bg-dark">
+                                            Đã hủy
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- NGÀY TẠO -->
+
+                                    <td>
+
+                                        <span th:if="${document.createdAt != null}"
+                                              th:text="${#temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                            15/09/2026 14:20
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- THAO TÁC -->
+
+                                    <td class="text-center">
+
+                                        <a th:href="@{/documents/{id}/sign(id=${document.id})}"
+                                           class="btn btn-sm btn-primary"
+                                           title="Xem hồ sơ">
+
+                                            <i class="bi bi-eye me-1"></i>
+                                            Xem
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <!-- KHÔNG CÓ DỮ LIỆU -->
+
+                                <tr th:if="${documents == null or #lists.isEmpty(documents)}">
+
+                                    <td colspan="6"
+                                        class="text-center py-5">
+
+                                        <div class="text-muted">
+
+                                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+
+                                            <div class="fw-semibold">
+                                                Không có hồ sơ trình ký
+                                            </div>
+
+                                            <small>
+                                                Chưa có hồ sơ phù hợp với điều kiện tìm kiếm.
+                                            </small>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,2279 @@
+﻿<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Ký hồ sơ')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <header th:replace="~{fragments/layout :: header}"></header>
+
+    <!-- ===================================================== -->
+    <!-- SIDEBAR -->
+    <!-- ===================================================== -->
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- ===================================================== -->
+    <!-- MAIN -->
+    <!-- ===================================================== -->
+
+    <main class="app-main">
+
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="sign-page-header">
+
+                    <div>
+                        <a th:href="@{/trinh-ky}"
+                           class="btn btn-light border mb-3">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Quay lại danh sách
+                        </a>
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+
+                            <span class="sign-page-label">
+                                TRANG KÝ HỒ SƠ
+                            </span>
+
+                            <span class="status-badge"
+                                  th:classappend="${document.status.css}"
+                                  th:text="${document.status.label}">
+                            </span>
+
+                        </div>
+
+                        <h1 class="sign-page-title"
+                            th:text="${document.title}">
+                            Tên hồ sơ
+                        </h1>
+
+                        <div class="sign-page-meta">
+
+                            <span>
+                                <i class="bi bi-hash"></i>
+                                <strong th:text="${document.documentCode}">
+                                    HS00001
+                                </strong>
+                            </span>
+
+                            <span>
+                                <i class="bi bi-person"></i>
+                                <span th:text="${document.createdBy.fullName}">
+                                    Người tạo
+                                </span>
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+                                <span th:text="${#temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    15/09/2026
+                                </span>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="sign-header-actions">
+
+                        <a th:href="@{/documents/{id}/print(id=${document.id})}"
+                           target="_blank"
+                           class="btn btn-light border">
+                            <i class="bi bi-printer me-1"></i>
+                            In hồ sơ
+                        </a>
+
+                        <a th:href="@{/documents/{id}(id=${document.id})}"
+                           class="btn btn-primary">
+                            <i class="bi bi-file-earmark-text me-1"></i>
+                            Chi tiết
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <!-- ================================================= -->
+                <!-- CURRENT APPROVER -->
+                <!-- ================================================= -->
+
+                <div class="sign-current-user"
+                     th:if="${currentFlow != null}">
+
+                    <div class="sign-current-icon">
+                        <i class="bi bi-pen-fill"></i>
+                    </div>
+
+                    <div class="sign-current-content">
+
+                        <div class="sign-current-label">
+                            ĐANG ĐẾN LƯỢT XỬ LÝ
+                        </div>
+
+                        <div class="sign-current-title">
+
+                            <span th:text="${currentFlow.approver.fullName}">
+                                Người ký
+                            </span>
+
+                            <span class="sign-you-badge">
+                                <i class="bi bi-person-check-fill"></i>
+                                Bạn
+                            </span>
+
+                        </div>
+
+                        <div class="sign-current-meta"
+                             th:text="${currentFlow.approver.position + ' • ' + currentFlow.approver.department}">
+                            Chức vụ • Phòng ban
+                        </div>
+
+                    </div>
+
+                    <div class="sign-current-status">
+                        <span class="badge bg-warning-subtle text-warning-emphasis">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Đang xử lý
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- GRID -->
+                <!-- ================================================= -->
+
+                <div class="sign-layout">
+
+                    <!-- ================================================= -->
+                    <!-- LEFT: FILE -->
+                    <!-- ================================================= -->
+
+                    <section class="sign-left-column">
+
+                        <div class="card sign-card">
+
+                            <div class="card-header sign-card-header">
+
+                                <div>
+                                    <div class="sign-section-kicker">
+                                        TÀI LIỆU
+                                    </div>
+
+                                    <h3 class="sign-section-title">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                        File hồ sơ
+                                    </h3>
+                                </div>
+
+                                <span class="sign-file-count"
+                                      th:text="${document.files != null ? document.files.size() : 0} + ' file'">
+                                    1 file
+                                </span>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <!-- FILE LIST -->
+
+                                <div class="sign-file-list"
+                                     th:if="${document.files != null and !document.files.isEmpty()}">
+
+                                    <div class="sign-file-item"
+                                         th:each="file : ${document.files}">
+
+                                        <div class="sign-file-icon">
+                                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                                        </div>
+
+                                        <div class="sign-file-info">
+
+                                            <div class="sign-file-name"
+                                                 th:text="${file.fileName}">
+                                                TaiLieu.pdf
+                                            </div>
+
+                                            <div class="sign-file-meta">
+
+                                                <span th:text="'Phiên bản ' + ${file.version}">
+                                                    Phiên bản 1
+                                                </span>
+
+                                                <span th:if="${file.fileSize != null}"
+                                                      th:text="${#numbers.formatDecimal(file.fileSize / 1024.0, 1, 1)} + ' KB'">
+                                                    120 KB
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="sign-file-actions">
+
+                                            <a th:href="@{/documents/files/{fileId}/download(fileId=${file.id})}"
+                                               target="_blank"
+                                               class="btn btn-sm btn-light border"
+                                               title="Xem file">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            <a th:href="@{/documents/files/{fileId}/download(fileId=${file.id})}"
+                                               class="btn btn-sm btn-primary"
+                                               title="Tải xuống">
+                                                <i class="bi bi-download"></i>
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- PREVIEW -->
+
+                                <div class="sign-preview"
+                                     th:if="${document.files != null and !document.files.isEmpty()}">
+
+                                    <div class="sign-preview-toolbar">
+
+                                        <span>
+                                            <i class="bi bi-eye me-1"></i>
+                                            Xem trước tài liệu
+                                        </span>
+
+                                        <span class="sign-preview-note">
+                                            Nếu trình duyệt hỗ trợ PDF
+                                        </span>
+
+                                    </div>
+
+                                    <div class="sign-preview-body">
+
+                                        <iframe
+                                            th:src="@{/documents/files/{fileId}/download(fileId=${document.files[0].id})}"
+                                            title="Xem trước tài liệu"
+                                            loading="lazy">
+                                        </iframe>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- NO FILE -->
+
+                                <div class="sign-empty-file"
+                                     th:if="${document.files == null or document.files.isEmpty()}">
+
+                                    <i class="bi bi-file-earmark-x"></i>
+
+                                    <strong>Chưa có file đính kèm</strong>
+
+                                    <span>
+                                        Hồ sơ hiện chưa có tài liệu để xem.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DOCUMENT INFO -->
+
+                        <div class="card sign-card">
+
+                            <div class="card-header sign-card-header">
+
+                                <div>
+                                    <div class="sign-section-kicker">
+                                        THÔNG TIN
+                                    </div>
+
+                                    <h3 class="sign-section-title">
+                                        <i class="bi bi-info-circle"></i>
+                                        Nội dung hồ sơ
+                                    </h3>
+                                </div>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="sign-info-grid">
+
+                                    <div class="sign-info-item">
+                                        <span>Mã hồ sơ</span>
+                                        <strong th:text="${document.documentCode}">
+                                            HS00001
+                                        </strong>
+                                    </div>
+
+                                    <div class="sign-info-item">
+                                        <span>Người tạo</span>
+                                        <strong th:text="${document.createdBy.fullName}">
+                                            Nguyễn Văn A
+                                        </strong>
+                                    </div>
+
+                                    <div class="sign-info-item sign-info-full">
+                                        <span>Tiêu đề</span>
+                                        <strong th:text="${document.title}">
+                                            Tên hồ sơ
+                                        </strong>
+                                    </div>
+
+                                    <div class="sign-info-item sign-info-full">
+                                        <span>Mô tả</span>
+
+                                        <p th:text="${document.description ?: 'Không có mô tả cho hồ sơ này.'}">
+                                            Không có mô tả.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- ================================================= -->
+                    <!-- RIGHT: WORKFLOW + ACTION -->
+                    <!-- ================================================= -->
+
+                    <section class="sign-right-column">
+
+                        <!-- WORKFLOW -->
+
+                        <div class="card sign-card">
+
+                            <div class="card-header sign-card-header">
+
+                                <div>
+                                    <div class="sign-section-kicker">
+                                        QUY TRÌNH
+                                    </div>
+
+                                    <h3 class="sign-section-title">
+                                        <i class="bi bi-diagram-3"></i>
+                                        Quy trình trình ký
+                                    </h3>
+                                </div>
+
+                                <span class="sign-flow-count"
+                                      th:text="${flows != null ? flows.size() : 0} + ' bước'">
+                                    3 bước
+                                </span>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="sign-workflow"
+                                     th:if="${flows != null and !flows.isEmpty()}">
+
+                                    <div class="sign-flow-item"
+                                         th:each="flow, stat : ${flows}"
+                                         th:classappend="${flow.status.name() == 'SIGNING'} ? ' is-current' :
+                                                         (${flow.status.name() == 'SIGNED'} ? ' is-completed' :
+                                                         (${flow.status.name() == 'REJECTED' or flow.status.name() == 'RETURNED'} ? ' is-danger' : ''))">
+
+                                        <div class="sign-flow-line"
+                                             th:if="${!stat.last}"></div>
+
+                                        <div class="sign-flow-marker">
+
+                                            <i class="bi bi-check-lg"
+                                               th:if="${flow.status.name() == 'SIGNED'}"></i>
+
+                                            <i class="bi bi-pen-fill"
+                                               th:if="${flow.status.name() == 'SIGNING'}"></i>
+
+                                            <i class="bi bi-x-lg"
+                                               th:if="${flow.status.name() == 'REJECTED'}"></i>
+
+                                            <i class="bi bi-arrow-counterclockwise"
+                                               th:if="${flow.status.name() == 'RETURNED'}"></i>
+
+                                            <i class="bi bi-clock"
+                                               th:if="${flow.status.name() == 'WAITING'}"></i>
+
+                                        </div>
+
+                                        <div class="sign-flow-content">
+
+                                            <div class="sign-flow-top">
+
+                                                <span class="sign-flow-step"
+                                                      th:text="'Bước ' + ${flow.stepOrder}">
+                                                    Bước 1
+                                                </span>
+
+                                                <span class="sign-flow-status"
+                                                      th:classappend="${flow.status.css}"
+                                                      th:text="${flow.status.label}">
+                                                    Đang xử lý
+                                                </span>
+
+                                            </div>
+
+                                            <div class="sign-flow-person">
+
+                                                <div class="sign-flow-avatar">
+
+                                                    <span th:text="${#strings.substring(flow.approver.fullName,0,1)}">
+                                                        A
+                                                    </span>
+
+                                                </div>
+
+                                                <div>
+
+                                                    <strong th:text="${flow.approver.fullName}">
+                                                        Người ký
+                                                    </strong>
+
+                                                    <span th:text="${flow.approver.position}">
+                                                        Chức vụ
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="sign-flow-current"
+                                                 th:if="${flow.status.name() == 'SIGNING'}">
+
+                                                <i class="bi bi-arrow-left-circle-fill"></i>
+                                                Người đang xử lý — Bạn
+
+                                            </div>
+
+                                            <div class="sign-flow-next"
+                                                 th:if="${flow.status.name() == 'WAITING'}">
+
+                                                <i class="bi bi-arrow-right-circle"></i>
+                                                Người chờ xử lý
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="sign-empty-file"
+                                     th:if="${flows == null or flows.isEmpty()}">
+
+                                    <i class="bi bi-diagram-3"></i>
+
+                                    <strong>Chưa có quy trình ký</strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- ACTION -->
+                        <!-- ================================================= -->
+
+                        <div class="card sign-action-card"
+                             th:if="${currentFlow != null}"
+                             sec:authorize="hasRole('APPROVER')">
+
+                            <div class="sign-action-header">
+
+                                <div class="sign-action-icon">
+                                    <i class="bi bi-pen-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="sign-section-kicker">
+                                        THAO TÁC
+                                    </div>
+
+                                    <h3 class="sign-section-title">
+                                        Xác nhận xử lý hồ sơ
+                                    </h3>
+
+                                    <p>
+                                        Kiểm tra nội dung trước khi thực hiện thao tác.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- COMMENT -->
+
+                            <div class="sign-comment-box">
+
+                                <label for="mainComment">
+                                    Ý kiến xử lý
+                                    <span class="optional-text">(không bắt buộc khi ký)</span>
+                                </label>
+
+                                <textarea id="mainComment"
+                                          class="form-control"
+                                          rows="4"
+                                          placeholder="Nhập ý kiến hoặc ghi chú nếu cần..."></textarea>
+
+                            </div>
+
+
+                            <!-- ACTION BUTTONS -->
+
+                            <div class="sign-action-buttons">
+
+                                <button type="button"
+                                        class="btn btn-sign-primary"
+                                        onclick="submitApprove()">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                    <span>Ký hồ sơ</span>
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-sign-secondary"
+                                        onclick="openReturnModal()">
+
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+
+                                    <span>Yêu cầu chỉnh sửa</span>
+
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-sign-danger"
+                                        onclick="openRejectModal()">
+
+                                    <i class="bi bi-x-circle-fill"></i>
+
+                                    <span>Từ chối</span>
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- FORWARD -->
+
+                            <div class="sign-forward-box">
+
+                                <div>
+
+                                    <strong>
+                                        <i class="bi bi-send me-1"></i>
+                                        Chuyển tiếp
+                                    </strong>
+
+                                    <span>
+                                        Chuyển hồ sơ sang bước xử lý tiếp theo.
+                                    </span>
+
+                                </div>
+
+                                <button type="button"
+                                        class="btn btn-outline-primary"
+                                        onclick="submitForward()">
+
+                                    Chuyển tiếp
+                                    <i class="bi bi-arrow-right ms-1"></i>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RESULT -->
+
+                        <div class="sign-result-card"
+                             th:if="${currentFlow == null}">
+
+                            <div class="sign-result-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>Không có thao tác cần xử lý</strong>
+
+                                <span>
+                                    Hồ sơ hiện không thuộc lượt xử lý của bạn.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- HISTORY -->
+                        <!-- ================================================= -->
+
+                        <div class="card sign-card">
+
+                            <div class="card-header sign-card-header">
+
+                                <div>
+                                    <div class="sign-section-kicker">
+                                        LỊCH SỬ
+                                    </div>
+
+                                    <h3 class="sign-section-title">
+                                        <i class="bi bi-clock-history"></i>
+                                        Hoạt động gần đây
+                                    </h3>
+                                </div>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="sign-history"
+                                     th:if="${actions != null and !actions.isEmpty()}">
+
+                                    <div class="sign-history-item"
+                                         th:each="action : ${actions}">
+
+                                        <div class="sign-history-icon">
+
+                                            <i class="bi bi-check-lg"
+                                               th:if="${action.action.name() == 'APPROVE'}"></i>
+
+                                            <i class="bi bi-x-lg"
+                                               th:if="${action.action.name() == 'REJECT'}"></i>
+
+                                            <i class="bi bi-arrow-counterclockwise"
+                                               th:if="${action.action.name() == 'RETURN'}"></i>
+
+                                            <i class="bi bi-send"
+                                               th:if="${action.action.name() == 'SUBMIT'}"></i>
+
+                                            <i class="bi bi-chat"
+                                               th:if="${action.action.name() == 'NOTE'}"></i>
+
+                                            <i class="bi bi-pencil"
+                                               th:if="${action.action.name() != 'APPROVE'
+                                                    and action.action.name() != 'REJECT'
+                                                    and action.action.name() != 'RETURN'
+                                                    and action.action.name() != 'SUBMIT'
+                                                    and action.action.name() != 'NOTE'}"></i>
+
+                                        </div>
+
+                                        <div class="sign-history-content">
+
+                                            <strong th:text="${action.action}">
+                                                APPROVE
+                                            </strong>
+
+                                            <span th:text="${action.comment ?: 'Không có ghi chú'}">
+                                                Ghi chú
+                                            </span>
+
+                                            <small th:text="${#temporals.format(action.actionTime, 'dd/MM/yyyy HH:mm')}">
+                                                15/09/2026 14:20
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="sign-empty-history"
+                                     th:if="${actions == null or actions.isEmpty()}">
+
+                                    <i class="bi bi-clock"></i>
+                                    Chưa có hoạt động nào.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ===================================================== -->
+    <!-- REJECT MODAL -->
+    <!-- ===================================================== -->
+
+    <div class="modal fade"
+         id="rejectModal"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content sign-modal">
+
+                <div class="modal-header">
+
+                    <div class="sign-modal-title">
+
+                        <div class="sign-modal-icon danger">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </div>
+
+                        <div>
+                            <h5>Từ chối hồ sơ</h5>
+                            <span>Vui lòng nhập lý do từ chối.</span>
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <label for="rejectComment">
+                        Lý do từ chối
+                        <span class="required-mark">*</span>
+                    </label>
+
+                    <textarea id="rejectComment"
+                              class="form-control sign-modal-textarea"
+                              rows="5"
+                              placeholder="Nhập lý do từ chối hồ sơ..."
+                              maxlength="1000"></textarea>
+
+                    <div class="sign-character-count">
+                        <span id="rejectCount">0</span>/1000
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light border"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-danger"
+                            onclick="submitReject()">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Xác nhận từ chối
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- RETURN MODAL -->
+    <!-- ===================================================== -->
+
+    <div class="modal fade"
+         id="returnModal"
+         tabindex="-1"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content sign-modal">
+
+                <div class="modal-header">
+
+                    <div class="sign-modal-title">
+
+                        <div class="sign-modal-icon warning">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </div>
+
+                        <div>
+                            <h5>Yêu cầu chỉnh sửa</h5>
+                            <span>Nhập nội dung cần người tạo bổ sung.</span>
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <label for="returnComment">
+                        Nội dung yêu cầu chỉnh sửa
+                        <span class="required-mark">*</span>
+                    </label>
+
+                    <textarea id="returnComment"
+                              class="form-control sign-modal-textarea"
+                              rows="5"
+                              placeholder="Ví dụ: Bổ sung chứng từ, điều chỉnh nội dung..."
+                              maxlength="1000"></textarea>
+
+                    <div class="sign-character-count">
+                        <span id="returnCount">0</span>/1000
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-light border"
+                            data-bs-dismiss="modal">
+                        Hủy
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-warning"
+                            onclick="submitReturn()">
+
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>
+                        Gửi yêu cầu
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- TOAST -->
+    <!-- ===================================================== -->
+
+    <div class="toast-container position-fixed top-0 end-0 p-3"
+         style="z-index: 1090">
+
+        <div id="successToast"
+             class="toast sign-toast"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+
+            <div class="toast-header">
+
+                <div class="toast-icon success">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <strong class="me-auto">Thành công</strong>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast">
+                </button>
+
+            </div>
+
+            <div class="toast-body"
+                 id="successToastMessage">
+                Thao tác đã được thực hiện.
+            </div>
+
+        </div>
+
+
+        <div id="errorToast"
+             class="toast sign-toast"
+             role="alert"
+             aria-live="assertive"
+             aria-atomic="true">
+
+            <div class="toast-header">
+
+                <div class="toast-icon danger">
+                    <i class="bi bi-exclamation-lg"></i>
+                </div>
+
+                <strong class="me-auto">Có lỗi</strong>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="toast">
+                </button>
+
+            </div>
+
+            <div class="toast-body"
+                 id="errorToastMessage">
+                Không thể thực hiện thao tác.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- FOOTER -->
+    <!-- ===================================================== -->
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- CSRF -->
+<!-- ========================================================= -->
+
+<meta name="_csrf"
+      th:if="${_csrf != null}"
+      th:content="${_csrf.token}">
+
+<meta name="_csrf_header"
+      th:if="${_csrf != null}"
+      th:content="${_csrf.headerName}">
+
+
+<script th:inline="javascript">
+
+    const documentId = /*[[${document.id}]]*/ 0;
+
+    const currentFlowId =
+        /*[[${currentFlow != null ? currentFlow.id : 0}]]*/ 0;
+
+
+    function getCsrf() {
+
+        const tokenElement =
+            document.querySelector('meta[name="_csrf"]');
+
+        const headerElement =
+            document.querySelector('meta[name="_csrf_header"]');
+
+        return {
+            token: tokenElement
+                ? tokenElement.getAttribute('content')
+                : null,
+
+            header: headerElement
+                ? headerElement.getAttribute('content')
+                : null
+        };
+    }
+
+
+    function showSuccess(message) {
+
+        document.getElementById('successToastMessage')
+            .textContent = message;
+
+        const toastElement =
+            document.getElementById('successToast');
+
+        bootstrap.Toast.getOrCreateInstance(toastElement, {
+            delay: 3000
+        }).show();
+    }
+
+
+    function showError(message) {
+
+        document.getElementById('errorToastMessage')
+            .textContent = message;
+
+        const toastElement =
+            document.getElementById('errorToast');
+
+        bootstrap.Toast.getOrCreateInstance(toastElement, {
+            delay: 4000
+        }).show();
+    }
+
+
+    function submitPost(url, comment) {
+
+        const form = document.createElement('form');
+
+        form.method = 'POST';
+        form.action = url;
+
+        const commentInput =
+            document.createElement('input');
+
+        commentInput.type = 'hidden';
+        commentInput.name = 'comment';
+        commentInput.value = comment || '';
+
+        form.appendChild(commentInput);
+
+
+        const csrf = getCsrf();
+
+        if (csrf.token) {
+
+            const csrfInput =
+                document.createElement('input');
+
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_csrf';
+            csrfInput.value = csrf.token;
+
+            form.appendChild(csrfInput);
+        }
+
+        document.body.appendChild(form);
+
+        form.submit();
+    }
+
+
+    function submitApprove() {
+
+        if (!currentFlowId) {
+
+            showError(
+                'Không tìm thấy bước ký hiện tại.'
+            );
+
+            return;
+        }
+
+        const comment =
+            document.getElementById('mainComment').value.trim();
+
+        if (!confirm(
+            'Bạn có chắc chắn muốn ký hồ sơ này?'
+        )) {
+            return;
+        }
+
+        submitPost(
+            '/flows/' + currentFlowId + '/approve',
+            comment
+        );
+    }
+
+
+    function submitForward() {
+
+        const comment =
+            document.getElementById('mainComment').value.trim();
+
+        if (!confirm(
+            'Bạn có chắc chắn muốn chuyển tiếp hồ sơ?'
+        )) {
+            return;
+        }
+
+        submitPost(
+            '/documents/' + documentId + '/forward',
+            comment
+        );
+    }
+
+
+    function openRejectModal() {
+
+        const textarea =
+            document.getElementById('rejectComment');
+
+        textarea.value = '';
+
+        updateCount(
+            'rejectComment',
+            'rejectCount'
+        );
+
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('rejectModal')
+        ).show();
+    }
+
+
+    function openReturnModal() {
+
+        const textarea =
+            document.getElementById('returnComment');
+
+        textarea.value = '';
+
+        updateCount(
+            'returnComment',
+            'returnCount'
+        );
+
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('returnModal')
+        ).show();
+    }
+
+
+    function submitReject() {
+
+        if (!currentFlowId) {
+
+            showError(
+                'Không tìm thấy bước ký hiện tại.'
+            );
+
+            return;
+        }
+
+        const comment =
+            document.getElementById('rejectComment')
+                .value.trim();
+
+        if (!comment) {
+
+            showError(
+                'Vui lòng nhập lý do từ chối.'
+            );
+
+            document.getElementById('rejectComment')
+                .focus();
+
+            return;
+        }
+
+        if (!confirm(
+            'Bạn có chắc chắn muốn từ chối hồ sơ này?'
+        )) {
+            return;
+        }
+
+        submitPost(
+            '/flows/' + currentFlowId + '/reject',
+            comment
+        );
+    }
+
+
+    function submitReturn() {
+
+        if (!currentFlowId) {
+
+            showError(
+                'Không tìm thấy bước xử lý hiện tại.'
+            );
+
+            return;
+        }
+
+        const comment =
+            document.getElementById('returnComment')
+                .value.trim();
+
+        if (!comment) {
+
+            showError(
+                'Vui lòng nhập nội dung yêu cầu chỉnh sửa.'
+            );
+
+            document.getElementById('returnComment')
+                .focus();
+
+            return;
+        }
+
+        if (!confirm(
+            'Bạn có chắc chắn muốn trả hồ sơ để chỉnh sửa?'
+        )) {
+            return;
+        }
+
+        submitPost(
+            '/flows/' + currentFlowId + '/return',
+            comment
+        );
+    }
+
+
+    function updateCount(textareaId, countId) {
+
+        const textarea =
+            document.getElementById(textareaId);
+
+        const counter =
+            document.getElementById(countId);
+
+        if (!textarea || !counter) {
+            return;
+        }
+
+        counter.textContent =
+            textarea.value.length;
+    }
+
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            const reject =
+                document.getElementById('rejectComment');
+
+            const returnBox =
+                document.getElementById('returnComment');
+
+
+            if (reject) {
+
+                reject.addEventListener(
+                    'input',
+                    function () {
+                        updateCount(
+                            'rejectComment',
+                            'rejectCount'
+                        );
+                    }
+                );
+
+            }
+
+
+            if (returnBox) {
+
+                returnBox.addEventListener(
+                    'input',
+                    function () {
+                        updateCount(
+                            'returnComment',
+                            'returnCount'
+                        );
+                    }
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+
+<style>
+
+/* =========================================================
+   SIGN PAGE
+   ========================================================= */
+
+.sign-page-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 12px 0 24px;
+}
+
+.sign-page-title {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.3;
+    font-weight: 750;
+    color: #172033;
+    max-width: 900px;
+}
+
+.sign-page-label,
+.sign-section-kicker {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: #64748b;
+}
+
+.sign-page-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 10px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.sign-page-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sign-page-meta strong {
+    color: #334155;
+}
+
+.sign-header-actions {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 42px;
+}
+
+
+/* =========================================================
+   CURRENT USER
+   ========================================================= */
+
+.sign-current-user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 17px 20px;
+    border: 1px solid rgba(245, 158, 11, .28);
+    border-radius: 14px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 247, 237, .95),
+        #fff
+    );
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
+}
+
+.sign-current-icon {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #fef3c7;
+    color: #d97706;
+    font-size: 20px;
+}
+
+.sign-current-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.sign-current-label {
+    margin-bottom: 3px;
+    color: #a16207;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+
+.sign-current-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 750;
+    color: #172033;
+}
+
+.sign-current-meta {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.sign-you-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.sign-current-status {
+    flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.sign-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(360px, .85fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.sign-left-column,
+.sign-right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.sign-card,
+.sign-action-card {
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .045);
+}
+
+.sign-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fff;
+}
+
+.sign-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 3px 0 0;
+    font-size: 16px;
+    font-weight: 750;
+    color: #172033;
+}
+
+.sign-section-title i {
+    color: #2563eb;
+}
+
+.sign-file-count,
+.sign-flow-count {
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FILE
+   ========================================================= */
+
+.sign-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sign-file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid #e5eaf1;
+    border-radius: 12px;
+    background: #fafcff;
+}
+
+.sign-file-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 19px;
+}
+
+.sign-file-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.sign-file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #1e293b;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sign-file-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.sign-file-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.sign-preview {
+    overflow: hidden;
+    margin-top: 16px;
+    border: 1px solid #dfe6ef;
+    border-radius: 12px;
+}
+
+.sign-preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 13px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sign-preview-note {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.sign-preview-body {
+    height: 650px;
+    background: #f1f5f9;
+}
+
+.sign-preview-body iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.sign-empty-file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 180px;
+    color: #64748b;
+    text-align: center;
+}
+
+.sign-empty-file i {
+    font-size: 36px;
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   INFO
+   ========================================================= */
+
+.sign-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.sign-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sign-info-item span {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.sign-info-item strong {
+    color: #334155;
+    font-size: 13px;
+}
+
+.sign-info-item p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.sign-info-full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   WORKFLOW
+   ========================================================= */
+
+.sign-workflow {
+    position: relative;
+}
+
+.sign-flow-item {
+    position: relative;
+    display: flex;
+    gap: 13px;
+    min-height: 88px;
+}
+
+.sign-flow-marker {
+    position: relative;
+    z-index: 2;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    background: #fff;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.sign-flow-line {
+    position: absolute;
+    left: 16px;
+    top: 34px;
+    bottom: -2px;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.sign-flow-item.is-completed .sign-flow-marker {
+    border-color: #22c55e;
+    background: #22c55e;
+    color: #fff;
+}
+
+.sign-flow-item.is-completed .sign-flow-line {
+    background: #86efac;
+}
+
+.sign-flow-item.is-current .sign-flow-marker {
+    border-color: #f59e0b;
+    background: #fff7ed;
+    color: #d97706;
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, .10);
+}
+
+.sign-flow-item.is-danger .sign-flow-marker {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.sign-flow-content {
+    min-width: 0;
+    flex: 1;
+    padding-bottom: 19px;
+}
+
+.sign-flow-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.sign-flow-step {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.sign-flow-status {
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.sign-flow-person {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.sign-flow-avatar {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.sign-flow-person strong {
+    display: block;
+    color: #334155;
+    font-size: 13px;
+}
+
+.sign-flow-person span {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.sign-flow-current,
+.sign-flow-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sign-flow-current {
+    background: #fff7ed;
+    color: #b45309;
+}
+
+.sign-flow-next {
+    background: #f8fafc;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   ACTION CARD
+   ========================================================= */
+
+.sign-action-card {
+    border-color: #bfdbfe;
+    box-shadow: 0 10px 30px rgba(37, 99, 235, .08);
+}
+
+.sign-action-header {
+    display: flex;
+    gap: 13px;
+    padding: 20px;
+    background: linear-gradient(
+        135deg,
+        #eff6ff,
+        #fff
+    );
+    border-bottom: 1px solid #dbeafe;
+}
+
+.sign-action-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, .20);
+}
+
+.sign-action-header p {
+    margin: 5px 0 0;
+    color: #64748b;
+    font-size: 11px;
+}
+
+.sign-comment-box {
+    padding: 18px 20px 0;
+}
+
+.sign-comment-box label,
+.sign-modal label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.optional-text {
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.sign-comment-box textarea,
+.sign-modal-textarea {
+    resize: vertical;
+    border-color: #dbe3ec;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.sign-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 16px 20px;
+}
+
+.btn-sign-primary,
+.btn-sign-secondary,
+.btn-sign-danger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 45px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.btn-sign-primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+
+.btn-sign-primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #fff;
+}
+
+.btn-sign-secondary {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #c2410c;
+}
+
+.btn-sign-danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+}
+
+.sign-forward-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    border-top: 1px solid #eef2f7;
+    background: #fafcff;
+}
+
+.sign-forward-box strong {
+    display: block;
+    color: #334155;
+    font-size: 12px;
+}
+
+.sign-forward-box span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   RESULT
+   ========================================================= */
+
+.sign-result-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 18px;
+    border: 1px solid #dbeafe;
+    border-radius: 14px;
+    background: #eff6ff;
+}
+
+.sign-result-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #2563eb;
+    font-size: 19px;
+}
+
+.sign-result-card strong {
+    display: block;
+    color: #1e3a8a;
+    font-size: 13px;
+}
+
+.sign-result-card span {
+    display: block;
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+.sign-history {
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-history-item {
+    display: flex;
+    gap: 11px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sign-history-item:last-child {
+    border-bottom: 0;
+}
+
+.sign-history-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 11px;
+}
+
+.sign-history-content {
+    min-width: 0;
+}
+
+.sign-history-content strong {
+    display: block;
+    color: #334155;
+    font-size: 11px;
+}
+
+.sign-history-content span {
+    display: block;
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.sign-history-content small {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+.sign-empty-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 100px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.sign-modal {
+    overflow: hidden;
+    border: 0;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .20);
+}
+
+.sign-modal .modal-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.sign-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.sign-modal-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+}
+
+.sign-modal-icon.danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.sign-modal-icon.warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.sign-modal-title h5 {
+    margin: 0;
+    color: #172033;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.sign-modal-title span {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.sign-modal .modal-body {
+    padding: 20px;
+}
+
+.required-mark {
+    color: #dc2626;
+}
+
+.sign-character-count {
+    margin-top: 5px;
+    text-align: right;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.sign-modal .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #eef2f7;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.sign-toast {
+    min-width: 320px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, .13);
+}
+
+.sign-toast .toast-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #eef2f7;
+    background: #fff;
+}
+
+.toast-icon {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+}
+
+.toast-icon.success {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.toast-icon.danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.sign-toast .toast-body {
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .sign-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sign-right-column {
+        order: -1;
+    }
+
+    .sign-preview-body {
+        height: 520px;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .sign-page-header {
+        flex-direction: column;
+    }
+
+    .sign-header-actions {
+        padding-top: 0;
+    }
+
+    .sign-current-user {
+        align-items: flex-start;
+    }
+
+    .sign-current-status {
+        display: none;
+    }
+
+    .sign-action-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .sign-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sign-info-full {
+        grid-column: auto;
+    }
+
+    .sign-preview-body {
+        height: 420px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .sign-page-title {
+        font-size: 21px;
+    }
+
+    .sign-page-meta {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .sign-file-item {
+        align-items: flex-start;
+    }
+
+    .sign-file-actions {
+        flex-direction: column;
+    }
+
+    .sign-forward-box {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sign-toast {
+        min-width: 0;
+        width: calc(100vw - 30px);
+    }
+
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    .sign-action-card,
+    .sign-header-actions,
+    .sign-current-user,
+    .sign-toast,
+    .modal {
+        display: none !important;
+    }
+
+    .sign-layout {
+        display: block;
+    }
+
+    .sign-preview-body {
+        height: 700px;
+    }
+
+}
+
+</style>
+
+</body>
+</html>

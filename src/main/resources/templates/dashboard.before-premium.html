@@ -1,0 +1,1141 @@
+﻿<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+    <main class="app-main">
+
+        <div class="app-content">
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+            <div class="app-page-header">
+
+                <div>
+                    <div class="app-page-eyebrow">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        TỔNG QUAN
+                    </div>
+
+                    <h1 class="app-page-title">
+                        Dashboard
+                    </h1>
+
+                    <p class="app-page-subtitle">
+                        Tổng quan tình hình hồ sơ và quy trình trình ký
+                    </p>
+                </div>
+
+                <div class="app-page-actions">
+
+                    <a th:href="@{/documents/new}"
+                       class="btn btn-primary app-btn-primary">
+
+                        <i class="bi bi-plus-lg"></i>
+
+                        <span>Tạo hồ sơ</span>
+
+                    </a>
+
+                    <a th:href="@{/documents}"
+                       class="btn btn-light app-btn-light">
+
+                        <i class="bi bi-folder2-open"></i>
+
+                        <span>Danh sách hồ sơ</span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 KPI CARDS
+            ================================================== -->
+            <section class="dashboard-kpi-grid">
+
+                <!-- TOTAL -->
+                <a th:href="@{/documents}"
+                   class="dashboard-kpi-card kpi-primary">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Tổng số hồ sơ
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['total']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-collection"></i>
+                            Tất cả hồ sơ trong hệ thống
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+
+                <!-- WAITING -->
+                <a th:href="@{/documents(status='WAITING_SIGN')}"
+                   class="dashboard-kpi-card kpi-warning">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Chờ ký
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['waitingSign']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-clock"></i>
+                            Đang chờ người ký
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+
+                <!-- SIGNING -->
+                <a th:href="@{/documents(status='SIGNING')}"
+                   class="dashboard-kpi-card kpi-info">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Đang xử lý
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['signing']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Đang được xử lý
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+
+                <!-- COMPLETED -->
+                <a th:href="@{/documents(status='COMPLETED')}"
+                   class="dashboard-kpi-card kpi-success">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Đã hoàn tất
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['completed']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-check-lg"></i>
+                            Quy trình đã hoàn thành
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+
+                <!-- REJECTED -->
+                <a th:href="@{/documents(status='REJECTED')}"
+                   class="dashboard-kpi-card kpi-danger">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Từ chối
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['rejected']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-exclamation-circle"></i>
+                            Hồ sơ bị từ chối
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+
+                <!-- RETURNED -->
+                <a th:href="@{/documents(status='RETURNED')}"
+                   class="dashboard-kpi-card kpi-purple">
+
+                    <div class="kpi-icon">
+                        <i class="bi bi-arrow-return-left"></i>
+                    </div>
+
+                    <div class="kpi-content">
+
+                        <div class="kpi-label">
+                            Trả lại
+                        </div>
+
+                        <div class="kpi-value"
+                             th:text="${counts['returned']}">
+                            0
+                        </div>
+
+                        <div class="kpi-meta">
+                            <i class="bi bi-pencil"></i>
+                            Cần bổ sung / chỉnh sửa
+                        </div>
+
+                    </div>
+
+                    <i class="bi bi-arrow-up-right kpi-arrow"></i>
+
+                </a>
+
+            </section>
+
+
+            <!-- =================================================
+                 MAIN DASHBOARD GRID
+            ================================================== -->
+            <div class="dashboard-main-grid">
+
+                <!-- =================================================
+                     CHART
+                ================================================== -->
+                <section class="app-card dashboard-chart-card">
+
+                    <div class="app-card-header">
+
+                        <div>
+
+                            <div class="app-card-title">
+                                <i class="bi bi-bar-chart-line"></i>
+                                Thống kê hồ sơ
+                            </div>
+
+                            <div class="app-card-subtitle">
+                                Phân bố hồ sơ theo trạng thái
+                            </div>
+
+                        </div>
+
+                        <a th:href="@{/reports}"
+                           class="app-card-action">
+
+                            Xem báo cáo
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="dashboard-chart-wrapper">
+
+                        <canvas id="documentStatusChart"></canvas>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     SUMMARY
+                ================================================== -->
+                <section class="app-card dashboard-summary-card">
+
+                    <div class="app-card-header">
+
+                        <div>
+
+                            <div class="app-card-title">
+                                <i class="bi bi-pie-chart"></i>
+                                Tổng quan trạng thái
+                            </div>
+
+                            <div class="app-card-subtitle">
+                                Tình hình xử lý hiện tại
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-status-list">
+
+                        <!-- DRAFT -->
+                        <a th:href="@{/documents(status='DRAFT')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-gray"></span>
+
+                            <span class="status-name">
+                                Hồ sơ nháp
+                            </span>
+
+                            <strong th:text="${counts['draft']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- WAITING -->
+                        <a th:href="@{/documents(status='WAITING_SIGN')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-orange"></span>
+
+                            <span class="status-name">
+                                Chờ ký
+                            </span>
+
+                            <strong th:text="${counts['waitingSign']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- SIGNING -->
+                        <a th:href="@{/documents(status='SIGNING')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-blue"></span>
+
+                            <span class="status-name">
+                                Đang xử lý
+                            </span>
+
+                            <strong th:text="${counts['signing']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- SIGNED -->
+                        <a th:href="@{/documents(status='SIGNED')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-indigo"></span>
+
+                            <span class="status-name">
+                                Đã ký
+                            </span>
+
+                            <strong th:text="${counts['signed']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- COMPLETED -->
+                        <a th:href="@{/documents(status='COMPLETED')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-green"></span>
+
+                            <span class="status-name">
+                                Hoàn tất
+                            </span>
+
+                            <strong th:text="${counts['completed']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- REJECTED -->
+                        <a th:href="@{/documents(status='REJECTED')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-red"></span>
+
+                            <span class="status-name">
+                                Từ chối
+                            </span>
+
+                            <strong th:text="${counts['rejected']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- RETURNED -->
+                        <a th:href="@{/documents(status='RETURNED')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-purple"></span>
+
+                            <span class="status-name">
+                                Trả lại
+                            </span>
+
+                            <strong th:text="${counts['returned']}">
+                                0
+                            </strong>
+
+                        </a>
+
+
+                        <!-- CANCELLED -->
+                        <a th:href="@{/documents(status='CANCELLED')}"
+                           class="dashboard-status-row">
+
+                            <span class="status-dot status-dot-dark"></span>
+
+                            <span class="status-name">
+                                Đã hủy
+                            </span>
+
+                            <strong th:text="${counts['cancelled']}">
+                                0
+                            </strong>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 PENDING + RECENT
+            ================================================== -->
+            <div class="dashboard-content-grid">
+
+                <!-- =================================================
+                     DOCUMENTS NEED ACTION
+                ================================================== -->
+                <section class="app-card">
+
+                    <div class="app-card-header">
+
+                        <div>
+
+                            <div class="app-card-title">
+                                <i class="bi bi-lightning-charge"></i>
+                                Hồ sơ cần xử lý
+                            </div>
+
+                            <div class="app-card-subtitle">
+                                Các hồ sơ đang chờ hoặc đang được xử lý
+                            </div>
+
+                        </div>
+
+                        <a th:href="@{/trinh-ky}"
+                           class="app-card-action">
+
+                            Xem tất cả
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="dashboard-action-list">
+
+                        <div th:each="d : ${documents}"
+                             th:if="${d.status.name() == 'WAITING_SIGN' || d.status.name() == 'SIGNING'}"
+                             class="dashboard-action-item">
+
+                            <div class="dashboard-action-icon"
+                                 th:classappend="${d.status.name() == 'SIGNING'} ? ' action-icon-blue' : ' action-icon-orange'">
+
+                                <i th:class="${d.status.name() == 'SIGNING'} ? 'bi bi-pencil-square' : 'bi bi-hourglass-split'"></i>
+
+                            </div>
+
+                            <div class="dashboard-action-content">
+
+                                <a th:href="@{/documents/{id}/sign(id=${d.id})}"
+                                   class="dashboard-action-title"
+                                   th:text="${d.title}">
+
+                                    Hồ sơ
+                                </a>
+
+                                <div class="dashboard-action-meta">
+
+                                    <span th:text="${d.documentCode}">
+                                        HS000000
+                                    </span>
+
+                                    <span class="meta-separator">
+                                        •
+                                    </span>
+
+                                    <span th:text="${d.createdBy.fullName}">
+                                        Người tạo
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <span class="badge"
+                                  th:classappend="${d.status.css}"
+                                  th:text="${d.status.label}">
+                                Chờ ký
+                            </span>
+
+                        </div>
+
+
+                        <div th:if="${documents.?[status.name() == 'WAITING_SIGN' || status.name() == 'SIGNING'].isEmpty()}"
+                             class="dashboard-empty">
+
+                            <div class="dashboard-empty-icon">
+                                <i class="bi bi-check2-circle"></i>
+                            </div>
+
+                            <div class="dashboard-empty-title">
+                                Không có hồ sơ cần xử lý
+                            </div>
+
+                            <div class="dashboard-empty-text">
+                                Hiện tại không có hồ sơ đang chờ xử lý.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     QUICK ACTIONS
+                ================================================== -->
+                <section class="app-card dashboard-quick-card">
+
+                    <div class="app-card-header">
+
+                        <div>
+
+                            <div class="app-card-title">
+                                <i class="bi bi-grid"></i>
+                                Thao tác nhanh
+                            </div>
+
+                            <div class="app-card-subtitle">
+                                Truy cập nhanh các chức năng
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-action-grid">
+
+                        <a th:href="@{/documents/new}"
+                           class="quick-action-item">
+
+                            <span class="quick-action-icon quick-icon-blue">
+                                <i class="bi bi-file-earmark-plus"></i>
+                            </span>
+
+                            <span>
+                                <strong>Tạo hồ sơ</strong>
+                                <small>Tạo hồ sơ mới</small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a th:href="@{/trinh-ky}"
+                           class="quick-action-item">
+
+                            <span class="quick-action-icon quick-icon-orange">
+                                <i class="bi bi-pen"></i>
+                            </span>
+
+                            <span>
+                                <strong>Trình ký</strong>
+                                <small>Xử lý hồ sơ chờ ký</small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a th:href="@{/documents}"
+                           class="quick-action-item">
+
+                            <span class="quick-action-icon quick-icon-green">
+                                <i class="bi bi-folder2-open"></i>
+                            </span>
+
+                            <span>
+                                <strong>Danh sách hồ sơ</strong>
+                                <small>Tra cứu hồ sơ</small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a th:href="@{/reports}"
+                           class="quick-action-item">
+
+                            <span class="quick-action-icon quick-icon-purple">
+                                <i class="bi bi-bar-chart"></i>
+                            </span>
+
+                            <span>
+                                <strong>Báo cáo</strong>
+                                <small>Xem thống kê</small>
+                            </span>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 RECENT DOCUMENTS
+            ================================================== -->
+            <section class="app-card dashboard-recent-card">
+
+                <div class="app-card-header">
+
+                    <div>
+
+                        <div class="app-card-title">
+                            <i class="bi bi-clock-history"></i>
+                            Hồ sơ gần đây
+                        </div>
+
+                        <div class="app-card-subtitle">
+                            Các hồ sơ mới được cập nhật trong hệ thống
+                        </div>
+
+                    </div>
+
+                    <a th:href="@{/documents}"
+                       class="app-card-action">
+
+                        Xem tất cả hồ sơ
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table dashboard-document-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th style="width: 150px;">
+                                Mã hồ sơ
+                            </th>
+
+                            <th>
+                                Hồ sơ
+                            </th>
+
+                            <th style="width: 190px;">
+                                Người tạo
+                            </th>
+
+                            <th style="width: 150px;">
+                                Trạng thái
+                            </th>
+
+                            <th style="width: 180px;">
+                                Thời gian
+                            </th>
+
+                            <th style="width: 70px;">
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="d : ${documents}">
+
+                            <td>
+
+                                <a th:href="@{/documents/{id}(id=${d.id})}"
+                                   class="document-code"
+                                   th:text="${d.documentCode}">
+
+                                    HS000000
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                <a th:href="@{/documents/{id}(id=${d.id})}"
+                                   class="document-title"
+                                   th:text="${d.title}">
+
+                                    Tên hồ sơ
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="document-creator">
+
+                                    <span class="creator-avatar"
+                                          th:text="${#strings.substring(d.createdBy.fullName,0,1)}">
+                                        N
+                                    </span>
+
+                                    <span th:text="${d.createdBy.fullName}">
+                                        Người tạo
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge"
+                                      th:classappend="${d.status.css}"
+                                      th:text="${d.status.label}">
+                                    Trạng thái
+                                </span>
+
+                            </td>
+
+
+                            <td class="document-date">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                <span th:text="${#temporals.format(d.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2026 10:00
+                                </span>
+
+                            </td>
+
+
+                            <td class="text-end">
+
+                                <a th:href="@{/documents/{id}(id=${d.id})}"
+                                   class="table-action-button"
+                                   title="Xem hồ sơ">
+
+                                    <i class="bi bi-chevron-right"></i>
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr th:if="${#lists.isEmpty(documents)}">
+
+                            <td colspan="6">
+
+                                <div class="dashboard-empty table-empty">
+
+                                    <div class="dashboard-empty-icon">
+                                        <i class="bi bi-folder-x"></i>
+                                    </div>
+
+                                    <div class="dashboard-empty-title">
+                                        Chưa có hồ sơ
+                                    </div>
+
+                                    <div class="dashboard-empty-text">
+                                        Hệ thống chưa có hồ sơ nào để hiển thị.
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 ACTIVITY TIMELINE
+            ================================================== -->
+            <section class="app-card dashboard-timeline-card">
+
+                <div class="app-card-header">
+
+                    <div>
+
+                        <div class="app-card-title">
+                            <i class="bi bi-activity"></i>
+                            Hoạt động gần đây
+                        </div>
+
+                        <div class="app-card-subtitle">
+                            Các hồ sơ mới nhất trong quy trình
+                        </div>
+
+                    </div>
+
+                    <a th:href="@{/documents}"
+                       class="app-card-action">
+
+                        Xem hồ sơ
+                        <i class="bi bi-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+
+                <div class="dashboard-timeline">
+
+                    <div th:each="d : ${documents}"
+                         class="timeline-item">
+
+                        <div class="timeline-marker"
+                             th:classappend="${d.status.name() == 'COMPLETED'} ? ' timeline-marker-success' :
+                                             (${d.status.name() == 'REJECTED'} ? ' timeline-marker-danger' :
+                                             (${d.status.name() == 'RETURNED'} ? ' timeline-marker-warning' :
+                                             ' timeline-marker-primary'))">
+
+                            <i th:class="${d.status.name() == 'COMPLETED'} ? 'bi bi-check-lg' :
+                                         (${d.status.name() == 'REJECTED'} ? 'bi bi-x-lg' :
+                                         (${d.status.name() == 'RETURNED'} ? 'bi bi-arrow-return-left' :
+                                         'bi bi-file-earmark-text'))">
+                            </i>
+
+                        </div>
+
+                        <div class="timeline-content">
+
+                            <div class="timeline-top">
+
+                                <a th:href="@{/documents/{id}(id=${d.id})}"
+                                   class="timeline-title"
+                                   th:text="${d.title}">
+
+                                    Hồ sơ
+                                </a>
+
+                                <span class="timeline-time"
+                                      th:text="${#temporals.format(d.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    01/01/2026 10:00
+                                </span>
+
+                            </div>
+
+                            <div class="timeline-description">
+
+                                <span>
+                                    Hồ sơ
+                                    <strong th:text="${d.documentCode}">
+                                        HS000000
+                                    </strong>
+                                </span>
+
+                                <span class="timeline-separator">
+                                    •
+                                </span>
+
+                                <span>
+                                    Người tạo:
+                                    <strong th:text="${d.createdBy.fullName}">
+                                        Người tạo
+                                    </strong>
+                                </span>
+
+                                <span class="timeline-separator">
+                                    •
+                                </span>
+
+                                <span class="badge"
+                                      th:classappend="${d.status.css}"
+                                      th:text="${d.status.label}">
+                                    Trạng thái
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div th:if="${#lists.isEmpty(documents)}"
+                         class="dashboard-empty">
+
+                        <div class="dashboard-empty-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+
+                        <div class="dashboard-empty-title">
+                            Chưa có hoạt động
+                        </div>
+
+                        <div class="dashboard-empty-text">
+                            Hoạt động của hệ thống sẽ xuất hiện tại đây.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- =========================================================
+     SCRIPTS
+========================================================== -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+
+<script th:inline="javascript">
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const canvas = document.getElementById('documentStatusChart');
+
+    if (!canvas || typeof Chart === 'undefined') {
+        return;
+    }
+
+    const counts = {
+        draft: /*[[${counts['draft']}]]*/ 0,
+        waiting: /*[[${counts['waitingSign']}]]*/ 0,
+        signing: /*[[${counts['signing']}]]*/ 0,
+        signed: /*[[${counts['signed']}]]*/ 0,
+        completed: /*[[${counts['completed']}]]*/ 0,
+        rejected: /*[[${counts['rejected']}]]*/ 0,
+        returned: /*[[${counts['returned']}]]*/ 0,
+        cancelled: /*[[${counts['cancelled']}]]*/ 0
+    };
+
+    new Chart(canvas, {
+
+        type: 'bar',
+
+        data: {
+
+            labels: [
+                'Nháp',
+                'Chờ ký',
+                'Đang xử lý',
+                'Đã ký',
+                'Hoàn tất',
+                'Từ chối',
+                'Trả lại',
+                'Đã hủy'
+            ],
+
+            datasets: [{
+
+                label: 'Số hồ sơ',
+
+                data: [
+                    counts.draft,
+                    counts.waiting,
+                    counts.signing,
+                    counts.signed,
+                    counts.completed,
+                    counts.rejected,
+                    counts.returned,
+                    counts.cancelled
+                ],
+
+                borderWidth: 0,
+
+                borderRadius: 8,
+
+                borderSkipped: false
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+                    displayColors: false,
+                    padding: 12,
+                    callbacks: {
+                        label: function (context) {
+                            return ' ' + context.parsed.y + ' hồ sơ';
+                        }
+                    }
+                }
+
+            },
+
+            scales: {
+
+                x: {
+                    grid: {
+                        display: false
+                    },
+
+                    ticks: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0
+                    },
+
+                    grid: {
+                        color: 'rgba(148, 163, 184, 0.15)'
+                    }
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
+
+

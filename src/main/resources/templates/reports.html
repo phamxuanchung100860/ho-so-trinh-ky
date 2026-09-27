@@ -1,0 +1,474 @@
+﻿```html
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Báo cáo')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <!-- CONTENT HEADER -->
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">
+                            <i class="bi bi-bar-chart-line me-2"></i>
+                            Báo cáo
+                        </h3>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    Trang chủ
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Báo cáo
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <!-- THỐNG KÊ -->
+                <div class="row">
+
+                    <!-- TỔNG -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-primary h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.total}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Tổng hồ sơ
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-folder2-open fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NHÁP -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-secondary h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.draft}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Nháp
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-file-earmark fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHỜ KÝ -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-warning h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.waitingSign}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Chờ ký
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-hourglass-split fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ĐANG XỬ LÝ -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-info h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.signing}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Đang xử lý
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-pen fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- HÀNG THỐNG KÊ 2 -->
+                <div class="row">
+
+                    <!-- ĐÃ KÝ -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-success h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.signed}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Đã ký
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-check-circle fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TỪ CHỐI -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-danger h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.rejected}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Từ chối
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-x-circle fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRẢ LẠI -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-warning h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.returned}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Trả lại
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-arrow-return-left fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HOÀN TẤT -->
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+                        <div class="card text-bg-dark h-100">
+                            <div class="card-body">
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+                                        <h3 class="mb-0"
+                                            th:text="${counts.completed}">
+                                            0
+                                        </h3>
+
+                                        <div>
+                                            Hoàn tất
+                                        </div>
+                                    </div>
+
+                                    <i class="bi bi-check2-all fs-1 opacity-75"></i>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- DANH SÁCH HỒ SƠ -->
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h3 class="card-title">
+                            <i class="bi bi-table me-2"></i>
+                            Danh sách hồ sơ
+                        </h3>
+
+                        <div class="card-tools">
+
+                            <a th:href="@{/documents}"
+                               class="btn btn-sm btn-primary">
+
+                                <i class="bi bi-folder2-open me-1"></i>
+                                Xem tất cả
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-body p-0">
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover table-striped mb-0">
+
+                                <thead>
+
+                                <tr>
+                                    <th style="width: 60px;">
+                                        #
+                                    </th>
+
+                                    <th>
+                                        Mã hồ sơ
+                                    </th>
+
+                                    <th>
+                                        Tiêu đề
+                                    </th>
+
+                                    <th>
+                                        Người tạo
+                                    </th>
+
+                                    <th>
+                                        Trạng thái
+                                    </th>
+
+                                    <th>
+                                        Ngày tạo
+                                    </th>
+
+                                    <th style="width: 100px;">
+                                        Thao tác
+                                    </th>
+                                </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                <tr th:each="document, stat : ${documents}">
+
+                                    <td th:text="${stat.count}">
+                                        1
+                                    </td>
+
+                                    <td>
+                                        <strong th:text="${document.documentCode}">
+                                            HS00001
+                                        </strong>
+                                    </td>
+
+                                    <td th:text="${document.title}">
+                                        Tiêu đề hồ sơ
+                                    </td>
+
+                                    <td>
+                                        <span th:text="${document.createdBy != null
+                                                ? document.createdBy.fullName
+                                                : 'Không xác định'}">
+                                            Người tạo
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <span th:if="${document.status.name() == 'DRAFT'}"
+                                              class="badge text-bg-secondary">
+                                            Nháp
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'WAITING_SIGN'}"
+                                              class="badge text-bg-warning">
+                                            Chờ ký
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'SIGNING'}"
+                                              class="badge text-bg-info">
+                                            Đang xử lý
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'SIGNED'}"
+                                              class="badge text-bg-success">
+                                            Đã ký
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'REJECTED'}"
+                                              class="badge text-bg-danger">
+                                            Từ chối
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'RETURNED'}"
+                                              class="badge text-bg-warning">
+                                            Trả lại
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'COMPLETED'}"
+                                              class="badge text-bg-dark">
+                                            Hoàn tất
+                                        </span>
+
+                                        <span th:if="${document.status.name() == 'CANCELLED'}"
+                                              class="badge text-bg-secondary">
+                                            Đã hủy
+                                        </span>
+
+                                    </td>
+
+                                    <td th:text="${#temporals.format(document.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                        15/09/2026
+                                    </td>
+
+                                    <td>
+
+                                        <a th:href="@{/documents/{id}(id=${document.id})}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="Xem chi tiết">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr th:if="${#lists.isEmpty(documents)}">
+
+                                    <td colspan="7"
+                                        class="text-center py-5 text-muted">
+
+                                        <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+
+                                        Chưa có dữ liệu hồ sơ.
+
+                                    </td>
+
+                                </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
+```
+
+

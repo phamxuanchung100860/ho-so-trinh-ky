@@ -1,0 +1,358 @@
+﻿```html
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Cấu hình')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <nav th:replace="~{fragments/layout :: topbar}"></nav>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <!-- HEADER -->
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">
+                            <i class="bi bi-gear me-2"></i>
+                            Cấu hình
+                        </h3>
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <ol class="breadcrumb float-sm-end">
+
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    Trang chủ
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active">
+                                Cấu hình
+                            </li>
+
+                        </ol>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <!-- CẤU HÌNH HỆ THỐNG -->
+                    <div class="col-lg-6">
+
+                        <div class="card">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+                                    <i class="bi bi-sliders me-2"></i>
+                                    Cấu hình hệ thống
+                                </h3>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Tên hệ thống
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           value="Hệ thống quản lý hồ sơ trình ký"
+                                           readonly>
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Cơ sở dữ liệu
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           value="SQL Server"
+                                           readonly>
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Trạng thái hệ thống
+                                    </label>
+
+                                    <div>
+
+                                        <span class="badge text-bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>
+                                            Đang hoạt động
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- NGƯỜI DUYỆT -->
+                    <div class="col-lg-6">
+
+                        <div class="card">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+
+                                    <i class="bi bi-people me-2"></i>
+
+                                    Người ký / Người duyệt
+
+                                </h3>
+
+                            </div>
+
+
+                            <div class="card-body p-0">
+
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover mb-0">
+
+                                        <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Họ tên
+                                            </th>
+
+                                            <th>
+                                                Chức vụ
+                                            </th>
+
+                                            <th>
+                                                Phòng ban
+                                            </th>
+
+                                            <th>
+                                                Trạng thái
+                                            </th>
+
+                                        </tr>
+
+                                        </thead>
+
+
+                                        <tbody>
+
+                                        <tr th:each="user : ${approvers}">
+
+                                            <td>
+
+                                                <strong
+                                                    th:text="${user.fullName}">
+                                                    Người dùng
+                                                </strong>
+
+                                            </td>
+
+
+                                            <td
+                                                th:text="${user.position}">
+                                                Chức vụ
+                                            </td>
+
+
+                                            <td
+                                                th:text="${user.department}">
+                                                Phòng ban
+                                            </td>
+
+
+                                            <td>
+
+                                                <span
+                                                    th:if="${user.active}"
+                                                    class="badge text-bg-success">
+
+                                                    Đang hoạt động
+
+                                                </span>
+
+                                                <span
+                                                    th:unless="${user.active}"
+                                                    class="badge text-bg-secondary">
+
+                                                    Đã khóa
+
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+
+                                        <tr th:if="${#lists.isEmpty(approvers)}">
+
+                                            <td colspan="4"
+                                                class="text-center text-muted py-4">
+
+                                                Chưa có người duyệt.
+
+                                            </td>
+
+                                        </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- THÔNG TIN QUY TRÌNH -->
+                <div class="card mt-4">
+
+                    <div class="card-header">
+
+                        <h3 class="card-title">
+
+                            <i class="bi bi-diagram-3 me-2"></i>
+
+                            Quy trình trình ký
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <h5>
+                                        <i class="bi bi-1-circle me-2"></i>
+                                        Bước 1
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        Tạo hồ sơ và tải tài liệu lên hệ thống.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <h5>
+                                        <i class="bi bi-2-circle me-2"></i>
+                                        Bước 2
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        Thiết lập danh sách người ký và thứ tự ký.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <h5>
+                                        <i class="bi bi-3-circle me-2"></i>
+                                        Bước 3
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        Người ký xử lý, từ chối hoặc yêu cầu chỉnh sửa.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+
+</html>
+```
+
+

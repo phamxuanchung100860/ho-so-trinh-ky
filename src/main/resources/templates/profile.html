@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Hồ sơ cá nhân')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <!-- CONTENT HEADER -->
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">
+                            <i class="bi bi-person-circle me-2"></i>
+                            Hồ sơ cá nhân
+                        </h3>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    Trang chủ
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active">
+                                Hồ sơ cá nhân
+                            </li>
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <!-- PROFILE CARD -->
+                    <div class="col-lg-4">
+
+                        <div class="card card-primary card-outline">
+
+                            <div class="card-body box-profile text-center">
+
+                                <div class="mb-3">
+
+                                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                                         style="width:100px;height:100px;font-size:42px;">
+
+                                        <i class="bi bi-person"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <h3 class="profile-username text-center"
+                                    th:text="${user.fullName}">
+                                    Người dùng
+                                </h3>
+
+                                <p class="text-muted text-center"
+                                   th:text="${user.position != null ? user.position : 'Người dùng hệ thống'}">
+                                    Người dùng hệ thống
+                                </p>
+
+                                <hr>
+
+                                <div class="text-start">
+
+                                    <div class="mb-3">
+                                        <strong>
+                                            <i class="bi bi-person-badge me-2"></i>
+                                            Tài khoản
+                                        </strong>
+
+                                        <span class="float-end"
+                                              th:text="${user.username}">
+                                            username
+                                        </span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>
+                                            <i class="bi bi-shield-check me-2"></i>
+                                            Vai trò
+                                        </strong>
+
+                                        <span class="float-end badge text-bg-primary"
+                                              th:text="${user.role}">
+                                            ROLE
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            <i class="bi bi-circle-fill me-2"
+                                               style="font-size:8px;"></i>
+                                            Trạng thái
+                                        </strong>
+
+                                        <span class="float-end badge"
+                                              th:classappend="${user.active} ? ' text-bg-success' : ' text-bg-danger'"
+                                              th:text="${user.active} ? 'Đang hoạt động' : 'Đã khóa'">
+                                            Đang hoạt động
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+                    <div class="col-lg-8">
+
+                        <div class="card">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+                                    <i class="bi bi-person-vcard me-2"></i>
+                                    Thông tin tài khoản
+                                </h3>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+
+                                    <!-- HỌ TÊN -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Họ và tên
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.fullName}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- USERNAME -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Tên đăng nhập
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person-badge"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.username}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- EMAIL -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Email
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-envelope"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.email != null ? user.email : 'Chưa cập nhật'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- PHÒNG BAN -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Phòng ban
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-building"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.department != null ? user.department : 'Chưa cập nhật'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- CHỨC VỤ -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Chức vụ
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-briefcase"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.position != null ? user.position : 'Chưa cập nhật'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- VAI TRÒ -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Vai trò hệ thống
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-shield-check"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.role}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- NGÀY TẠO -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Ngày tạo tài khoản
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-calendar3"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm') : 'Chưa cập nhật'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- TRẠNG THÁI -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Trạng thái tài khoản
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-toggle-on"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.active} ? 'Đang hoạt động' : 'Đã khóa'"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SECURITY CARD -->
+                        <div class="card mt-3">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+                                    <i class="bi bi-shield-lock me-2"></i>
+                                    Bảo mật
+                                </h3>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="alert alert-info mb-0">
+
+                                    <i class="bi bi-info-circle me-2"></i>
+
+                                    Thông tin mật khẩu không được hiển thị trên trang hồ sơ.
+
+                                    <span class="d-block mt-1">
+                                        Nếu cần thay đổi mật khẩu, hãy sử dụng chức năng cấu hình tài khoản.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>

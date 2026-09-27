@@ -1,0 +1,919 @@
+/* =========================================================
+   APP GLOBAL
+========================================================= */
+
+:root {
+    --app-blue: #0d6efd;
+    --app-dark: #0b1f3a;
+    --app-bg: #f4f7fb;
+    --app-border: #dfe7f1;
+    --app-text: #263445;
+    --app-muted: #6c7a89;
+    --app-success: #198754;
+    --app-danger: #dc3545;
+    --app-warning: #ffc107;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--app-bg);
+    font-size: 14px;
+    color: var(--app-text);
+}
+
+.app-header {
+    background: #fff !important;
+    border-bottom: 1px solid var(--app-border);
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.app-sidebar {
+    background: linear-gradient(180deg, #092443, #071a31) !important;
+}
+
+.sidebar-brand {
+    height: 58px;
+    display: flex;
+    align-items: center;
+}
+
+.brand-link {
+    font-weight: 700 !important;
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.sidebar-menu .nav-link {
+    border-radius: 8px;
+    margin: 2px 8px;
+    color: #d9e6f7;
+    transition: all .2s ease;
+}
+
+.sidebar-menu .nav-link:hover,
+.sidebar-menu .nav-link.active {
+    background: #0d6efd;
+    color: #fff;
+}
+
+.sidebar-menu .nav-link.active {
+    box-shadow: 0 3px 8px rgba(13, 110, 253, .2);
+}
+
+.nav-icon {
+    width: 1.3rem;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.app-content {
+    padding: 20px !important;
+}
+
+.page-title {
+    font-size: 23px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.page-subtitle {
+    color: var(--app-muted);
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+    border: 1px solid var(--app-border);
+    box-shadow: 0 3px 14px rgba(20, 50, 90, .05);
+    border-radius: 10px;
+}
+
+.card-header {
+    font-weight: 700;
+    background: #fff;
+    border-bottom: 1px solid var(--app-border);
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 125px;
+}
+
+.stat-card .stat-icon {
+    position: absolute;
+    right: 18px;
+    top: 24px;
+    font-size: 44px;
+    opacity: .13;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.status-badge {
+    min-width: 92px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table thead th {
+    white-space: nowrap;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #64748b;
+    background: #f8fafc;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background: #f8fbff;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-box {
+    min-width: 260px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.btn {
+    border-radius: 7px;
+}
+
+.btn-primary {
+    box-shadow: 0 2px 5px rgba(13, 110, 253, .2);
+}
+
+
+/* =========================================================
+   WIZARD
+========================================================= */
+
+.wizard {
+    display: flex;
+    gap: 8px;
+    margin: 18px 0 22px;
+}
+
+.wizard-step {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: #eef3f9;
+    color: #738196;
+}
+
+.wizard-step .num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d6e0ec;
+    font-weight: 700;
+}
+
+.wizard-step.active {
+    background: #e7f0ff;
+    color: #0d6efd;
+}
+
+.wizard-step.active .num {
+    background: #0d6efd;
+    color: #fff;
+}
+
+.wizard-step.done {
+    background: #eaf8f0;
+    color: #198754;
+}
+
+.wizard-step.done .num {
+    background: #198754;
+    color: #fff;
+}
+
+
+/* =========================================================
+   GENERAL WORKFLOW
+========================================================= */
+
+.workflow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow: auto;
+    padding: 8px 2px;
+}
+
+.flow-item {
+    min-width: 180px;
+    text-align: center;
+}
+
+.flow-line {
+    height: 3px;
+    background: #dce5ef;
+    flex: 1;
+    margin-top: 27px;
+}
+
+.flow-line.done {
+    background: #198754;
+}
+
+.flow-circle {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #dbe4ef;
+    background: #fff;
+    color: #64748b;
+}
+
+.flow-item.signing .flow-circle {
+    border-color: #0d6efd;
+    color: #0d6efd;
+    background: #eaf2ff;
+}
+
+.flow-item.signed .flow-circle {
+    border-color: #198754;
+    color: #198754;
+    background: #eaf8f0;
+}
+
+.flow-item.rejected .flow-circle {
+    border-color: #dc3545;
+    color: #dc3545;
+    background: #fff0f1;
+}
+
+.flow-name {
+    font-weight: 700;
+}
+
+.flow-role {
+    font-size: 12px;
+    color: #718096;
+}
+
+.flow-status {
+    margin-top: 6px;
+}
+
+
+/* =========================================================
+   FILE UPLOAD
+========================================================= */
+
+.file-drop {
+    border: 2px dashed #c8d7e8;
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    background: #fbfdff;
+    transition: .2s ease;
+}
+
+.file-drop:hover {
+    background: #f4f8ff;
+    border-color: #0d6efd;
+}
+
+.file-drop i {
+    font-size: 42px;
+    color: #0d6efd;
+}
+
+
+/* =========================================================
+   REVIEW / TIMELINE
+========================================================= */
+
+.review-box {
+    background: #f8fafc;
+    border: 1px solid var(--app-border);
+    border-radius: 9px;
+    padding: 15px;
+}
+
+.timeline {
+    position: relative;
+    margin-left: 8px;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 0 0 22px 28px;
+    border-left: 2px solid #dbe4ef;
+}
+
+.timeline-item:last-child {
+    border-left-color: transparent;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -8px;
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: 3px solid #dceaff;
+}
+
+.timeline-time {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.timeline-title {
+    font-weight: 700;
+}
+
+.comment-box {
+    background: #f8fafc;
+    border-radius: 9px;
+    padding: 10px;
+}
+
+.signature-panel {
+    position: sticky;
+    top: 15px;
+}
+
+
+/* =========================================================
+   SIGN PAGE - WORKFLOW
+========================================================= */
+
+.sign-workflow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 5px 0;
+}
+
+.sign-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 165px;
+    flex-shrink: 0;
+}
+
+.sign-step-circle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e9ecef;
+    color: #6c757d;
+    font-weight: 700;
+    border: 3px solid #e9ecef;
+}
+
+.sign-step.completed .sign-step-circle {
+    background: #20c997;
+    border-color: #20c997;
+    color: #fff;
+}
+
+.sign-step.current .sign-step-circle {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.sign-step.waiting .sign-step-circle {
+    background: #e9ecef;
+    border-color: #e9ecef;
+    color: #6c757d;
+}
+
+.sign-step-content {
+    min-width: 0;
+}
+
+.sign-workflow-arrow {
+    color: #adb5bd;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SIGN PAGE - DOCUMENT PREVIEW
+========================================================= */
+
+.document-preview {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    margin-top: 10px;
+    background: #f8f9fa;
+}
+
+.document-no-preview {
+    min-height: 220px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   SIGN PAGE - TIMELINE
+========================================================= */
+
+.sign-timeline {
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.sign-message {
+    display: flex;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.sign-message-line {
+    width: 42px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.sign-message-line::after {
+    content: "";
+    position: absolute;
+    top: 34px;
+    bottom: -22px;
+    width: 1px;
+    background: #dee2e6;
+}
+
+.sign-message:last-child .sign-message-line::after {
+    display: none;
+}
+
+.sign-message-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e8f1ff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+}
+
+.sign-message-content {
+    flex: 1;
+    min-width: 0;
+    padding-left: 8px;
+}
+
+.sign-comment {
+    margin-top: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f4f7fb;
+    color: #495057;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SIGN PAGE - USER LIST
+========================================================= */
+
+.user-list {
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 6px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background .15s ease;
+}
+
+.user-item:hover {
+    background: #f8fbff;
+}
+
+.user-item:last-child {
+    border-bottom: 0;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: #e8f1ff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   SIGN PAGE - CURRENT USER
+========================================================= */
+
+.current-user-avatar {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    background: #e8f1ff;
+    color: #0d6efd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   SIGN PAGE - MINI FLOW
+========================================================= */
+
+.flow-mini-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.flow-mini-item:last-child {
+    border-bottom: 0;
+}
+
+.flow-mini-number {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   SIGN PAGE - ACTION AREA
+========================================================= */
+
+.sign-action-panel {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 10px;
+}
+
+.sign-action-panel textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.sign-action-panel .btn {
+    min-width: 120px;
+}
+
+
+/* =========================================================
+   SIGN PAGE - STATUS
+========================================================= */
+
+.sign-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   GENERAL AVATAR
+========================================================= */
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e7f0ff;
+    color: #0d6efd;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-page {
+    background: linear-gradient(135deg, #eaf3ff, #f8fbff) !important;
+}
+
+.login-box {
+    width: 920px;
+    max-width: 95vw;
+}
+
+.login-card {
+    overflow: hidden;
+    border: 0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 15px 50px rgba(10, 50, 100, .12) !important;
+}
+
+.login-hero {
+    background: linear-gradient(145deg, #0d6efd, #0a3e91);
+    color: #fff;
+    padding: 45px;
+}
+
+.login-hero h1 {
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.login-hero p {
+    opacity: .88;
+}
+
+.login-feature {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.login-form {
+    padding: 42px;
+}
+
+.login-form .form-control {
+    height: 46px;
+}
+
+
+/* =========================================================
+   BADGE
+========================================================= */
+
+.badge {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-control,
+.form-select {
+    border-color: #d8e1ec;
+    border-radius: 7px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .1);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.sign-timeline::-webkit-scrollbar,
+.user-list::-webkit-scrollbar,
+.sign-workflow::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.sign-timeline::-webkit-scrollbar-thumb,
+.user-list::-webkit-scrollbar-thumb,
+.sign-workflow::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.sign-timeline::-webkit-scrollbar-track,
+.user-list::-webkit-scrollbar-track,
+.sign-workflow::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1199px) {
+
+    .sign-step {
+        min-width: 150px;
+    }
+
+    .document-preview {
+        height: 550px;
+    }
+
+    .user-list {
+        max-height: 350px;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .login-box {
+        width: 95vw;
+    }
+
+    .login-hero {
+        display: none;
+    }
+
+    .wizard-step {
+        font-size: 12px;
+    }
+
+    .wizard-step .label {
+        display: none;
+    }
+
+    .app-content {
+        padding: 12px !important;
+    }
+
+    .toolbar {
+        align-items: stretch;
+    }
+
+    .search-box {
+        min-width: 100%;
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .app-content {
+        padding: 10px !important;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .sign-workflow {
+        padding-bottom: 8px;
+    }
+
+    .sign-step {
+        min-width: 145px;
+    }
+
+    .sign-step-circle {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+    }
+
+    .document-preview {
+        height: 500px;
+    }
+
+    .sign-message-line {
+        width: 36px;
+    }
+
+    .current-user-avatar {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+    }
+
+    .sign-action-panel .btn {
+        flex: 1;
+    }
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+@media print {
+
+    .no-print,
+    .app-sidebar,
+    .app-header,
+    .app-footer {
+        display: none !important;
+    }
+
+    .app-main {
+        margin: 0 !important;
+    }
+
+    .app-content {
+        padding: 0 !important;
+    }
+
+    .card {
+        box-shadow: none;
+    }
+
+    .sign-workflow {
+        overflow: visible;
+    }
+}

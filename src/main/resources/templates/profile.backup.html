@@ -1,0 +1,399 @@
+﻿<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Há»“ sÆ¡ cĂ¡ nhĂ¢n')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- TOPBAR -->
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+    <!-- SIDEBAR -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <!-- MAIN -->
+    <main class="app-main">
+
+        <!-- CONTENT HEADER -->
+        <div class="app-content-header">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">
+                            <i class="bi bi-person-circle me-2"></i>
+                            Há»“ sÆ¡ cĂ¡ nhĂ¢n
+                        </h3>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item">
+                                <a th:href="@{/dashboard}">
+                                    Trang chá»§
+                                </a>
+                            </li>
+
+                            <li class="breadcrumb-item active">
+                                Há»“ sÆ¡ cĂ¡ nhĂ¢n
+                            </li>
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="app-content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <!-- PROFILE CARD -->
+                    <div class="col-lg-4">
+
+                        <div class="card card-primary card-outline">
+
+                            <div class="card-body box-profile text-center">
+
+                                <div class="mb-3">
+
+                                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                                         style="width:100px;height:100px;font-size:42px;">
+
+                                        <i class="bi bi-person"></i>
+
+                                    </div>
+
+                                </div>
+
+                                <h3 class="profile-username text-center"
+                                    th:text="${user.fullName}">
+                                    NgÆ°á»i dĂ¹ng
+                                </h3>
+
+                                <p class="text-muted text-center"
+                                   th:text="${user.position != null ? user.position : 'NgÆ°á»i dĂ¹ng há»‡ thá»‘ng'}">
+                                    NgÆ°á»i dĂ¹ng há»‡ thá»‘ng
+                                </p>
+
+                                <hr>
+
+                                <div class="text-start">
+
+                                    <div class="mb-3">
+                                        <strong>
+                                            <i class="bi bi-person-badge me-2"></i>
+                                            TĂ i khoáº£n
+                                        </strong>
+
+                                        <span class="float-end"
+                                              th:text="${user.username}">
+                                            username
+                                        </span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>
+                                            <i class="bi bi-shield-check me-2"></i>
+                                            Vai trĂ²
+                                        </strong>
+
+                                        <span class="float-end badge text-bg-primary"
+                                              th:text="${user.role}">
+                                            ROLE
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            <i class="bi bi-circle-fill me-2"
+                                               style="font-size:8px;"></i>
+                                            Tráº¡ng thĂ¡i
+                                        </strong>
+
+                                        <span class="float-end badge"
+                                              th:classappend="${user.active} ? ' text-bg-success' : ' text-bg-danger'"
+                                              th:text="${user.active} ? 'Äang hoáº¡t Ä‘á»™ng' : 'ÄĂ£ khĂ³a'">
+                                            Äang hoáº¡t Ä‘á»™ng
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INFORMATION -->
+                    <div class="col-lg-8">
+
+                        <div class="card">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+                                    <i class="bi bi-person-vcard me-2"></i>
+                                    ThĂ´ng tin tĂ i khoáº£n
+                                </h3>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row">
+
+                                    <!-- Há»Œ TĂN -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Há» vĂ  tĂªn
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.fullName}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- USERNAME -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            TĂªn Ä‘Äƒng nháº­p
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-person-badge"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.username}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- EMAIL -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Email
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-envelope"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.email != null ? user.email : 'ChÆ°a cáº­p nháº­t'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- PHĂ’NG BAN -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            PhĂ²ng ban
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-building"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.department != null ? user.department : 'ChÆ°a cáº­p nháº­t'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- CHá»¨C Vá»¤ -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Chá»©c vá»¥
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-briefcase"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.position != null ? user.position : 'ChÆ°a cáº­p nháº­t'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- VAI TRĂ’ -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Vai trĂ² há»‡ thá»‘ng
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-shield-check"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.role}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- NGĂ€Y Táº O -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            NgĂ y táº¡o tĂ i khoáº£n
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-calendar3"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm') : 'ChÆ°a cáº­p nháº­t'}"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- TRáº NG THĂI -->
+                                    <div class="col-md-6 mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Tráº¡ng thĂ¡i tĂ i khoáº£n
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                <i class="bi bi-toggle-on"></i>
+                                            </span>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   th:value="${user.active} ? 'Äang hoáº¡t Ä‘á»™ng' : 'ÄĂ£ khĂ³a'"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SECURITY CARD -->
+                        <div class="card mt-3">
+
+                            <div class="card-header">
+
+                                <h3 class="card-title">
+                                    <i class="bi bi-shield-lock me-2"></i>
+                                    Báº£o máº­t
+                                </h3>
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="alert alert-info mb-0">
+
+                                    <i class="bi bi-info-circle me-2"></i>
+
+                                    ThĂ´ng tin máº­t kháº©u khĂ´ng Ä‘Æ°á»£c hiá»ƒn thá»‹ trĂªn trang há»“ sÆ¡.
+
+                                    <span class="d-block mt-1">
+                                        Náº¿u cáº§n thay Ä‘á»•i máº­t kháº©u, hĂ£y sá»­ dá»¥ng chá»©c nÄƒng cáº¥u hĂ¬nh tĂ i khoáº£n.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</div>
+
+
+<!-- SCRIPTS -->
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+
+</body>
+</html>

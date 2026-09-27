@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+    <header th:replace="~{fragments/layout :: topbar}"></header>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+    <main class="app-main">
+
+        <div class="app-content">
+
+            <div class="container-fluid py-3">
+
+                <!-- PAGE TITLE -->
+                <div class="mb-4">
+
+                    <h1 class="page-title">
+                        Dashboard
+                    </h1>
+
+                    <div class="page-subtitle">
+                        Tổng quan tình hình hồ sơ và quy trình trình ký
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     STATISTICS
+                ================================================== -->
+                <div class="row g-3 mb-4">
+
+
+                    <!-- HỒ SƠ NHÁP -->
+                    <div class="col-xl-3 col-sm-6">
+
+                        <div class="card stat-card p-3 h-100">
+
+                            <div class="text-muted">
+                                Hồ sơ nháp
+                            </div>
+
+                            <div class="stat-number"
+                                 th:text="${counts['DRAFT']}">
+                                0
+                            </div>
+
+                            <i class="stat-icon bi bi-file-earmark"></i>
+
+                            <a th:href="@{/documents}"
+                               class="small text-decoration-none">
+
+                                Xem hồ sơ
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ĐANG TRÌNH KÝ -->
+                    <div class="col-xl-3 col-sm-6">
+
+                        <div class="card stat-card p-3 h-100">
+
+                            <div class="text-muted">
+                                Đang trình ký
+                            </div>
+
+                            <div class="stat-number"
+                                 th:text="${counts['SIGNING'] + counts['WAITING_SIGN']}">
+                                0
+                            </div>
+
+                            <i class="stat-icon bi bi-pen"></i>
+
+                            <a th:href="@{/documents}"
+                               class="small text-decoration-none">
+
+                                Xem hồ sơ
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HOÀN TẤT -->
+                    <div class="col-xl-3 col-sm-6">
+
+                        <div class="card stat-card p-3 h-100">
+
+                            <div class="text-muted">
+                                Hoàn tất
+                            </div>
+
+                            <div class="stat-number text-success"
+                                 th:text="${counts['COMPLETED']}">
+                                0
+                            </div>
+
+                            <i class="stat-icon bi bi-check-circle"></i>
+
+                            <a th:href="@{/documents}"
+                               class="small text-decoration-none">
+
+                                Xem hồ sơ
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TỪ CHỐI / TRẢ LẠI -->
+                    <div class="col-xl-3 col-sm-6">
+
+                        <div class="card stat-card p-3 h-100">
+
+                            <div class="text-muted">
+                                Từ chối / Trả lại
+                            </div>
+
+                            <div class="stat-number text-danger"
+                                 th:text="${counts['REJECTED'] + counts['RETURNED']}">
+                                0
+                            </div>
+
+                            <i class="stat-icon bi bi-exclamation-circle"></i>
+
+                            <a th:href="@{/documents}"
+                               class="small text-decoration-none">
+
+                                Xem hồ sơ
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     HỒ SƠ GẦN ĐÂY
+                ================================================== -->
+                <div class="card shadow-sm">
+
+                    <div class="card-header d-flex justify-content-between align-items-center">
+
+                        <h5 class="card-title mb-0">
+                            Hồ sơ gần đây
+                        </h5>
+
+                        <a th:href="@{/documents}"
+                           class="btn btn-sm btn-outline-primary">
+
+                            <i class="bi bi-list-ul me-1"></i>
+
+                            Xem tất cả
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover mb-0 align-middle">
+
+                            <thead>
+
+                            <tr>
+
+                                <th>
+                                    Mã hồ sơ
+                                </th>
+
+                                <th>
+                                    Tên hồ sơ
+                                </th>
+
+                                <th>
+                                    Người lập
+                                </th>
+
+                                <th>
+                                    Trạng thái
+                                </th>
+
+                                <th>
+                                    Ngày tạo
+                                </th>
+
+                                <th class="text-end">
+                                    Thao tác
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                            <!-- CÓ HỒ SƠ -->
+                            <tr th:each="d : ${documents}">
+
+                                <td class="fw-semibold"
+                                    th:text="${d.documentCode}">
+                                    HS00001
+                                </td>
+
+
+                                <td th:text="${d.title}">
+                                    Hồ sơ
+                                </td>
+
+
+                                <td th:text="${d.createdBy.fullName}">
+                                    Người lập
+                                </td>
+
+
+                                <td>
+
+                                    <span class="badge status-badge"
+                                          th:classappend="' text-bg-' + ${d.status.css}"
+                                          th:text="${d.status.label}">
+
+                                        Trạng thái
+
+                                    </span>
+
+                                </td>
+
+
+                                <td th:text="${#temporals.format(d.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                    19/09/2026 20:00
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       th:href="@{'/documents/' + ${d.id}}">
+
+                                        <i class="bi bi-eye me-1"></i>
+
+                                        Chi tiết
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- KHÔNG CÓ HỒ SƠ -->
+                            <tr th:if="${#lists.isEmpty(documents)}">
+
+                                <td colspan="6"
+                                    class="text-center text-muted py-5">
+
+                                    <i class="bi bi-folder2-open fs-2 d-block mb-2"></i>
+
+                                    Chưa có hồ sơ.
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
+    <th:block th:replace="~{fragments/layout :: scripts}">
+    </th:block>
+
+</div>
+
+</body>
+
+</html>
