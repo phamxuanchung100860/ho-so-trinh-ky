@@ -384,44 +384,6 @@
                                 </div>
 
 
-                                <!-- PREVIEW -->
-
-                                <div class="sign-preview"
-                                     th:if="${document.files != null and !document.files.isEmpty()}">
-
-                                    <div class="sign-preview-toolbar">
-
-                                        <span>
-
-                                            <i class="bi bi-eye me-1"></i>
-
-                                            Xem trước tài liệu
-
-                                        </span>
-
-
-                                        <span class="sign-preview-note">
-
-                                            Nếu trình duyệt hỗ trợ PDF
-
-                                        </span>
-
-                                    </div>
-
-
-                                    <div class="sign-preview-body">
-
-                                        <iframe
-                                            th:src="@{/documents/files/{fileId}/download(fileId=${document.files[0].id})}"
-                                            title="Xem trước tài liệu"
-                                            loading="lazy">
-                                        </iframe>
-
-                                    </div>
-
-                                </div>
-
-
                                 <!-- NO FILE -->
 
                                 <div class="sign-empty-file"
@@ -2961,9 +2923,10 @@
 
 .sign-layout {
     display: grid;
+    /* Tài liệu 30% - Quy trình + Thao tác 70% */
     grid-template-columns:
-        minmax(0, 1.45fr)
-        minmax(360px, .85fr);
+        minmax(280px, 30%)
+        minmax(0, 70%);
     gap: 20px;
     align-items: start;
 }
@@ -3083,41 +3046,6 @@
     gap: 5px;
 }
 
-.sign-preview {
-    overflow: hidden;
-    margin-top: 16px;
-    border: 1px solid #dfe6ef;
-    border-radius: 12px;
-}
-
-.sign-preview-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 13px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e5e7eb;
-    color: #334155;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.sign-preview-note {
-    color: #94a3b8;
-    font-size: 10px;
-    font-weight: 500;
-}
-
-.sign-preview-body {
-    height: 650px;
-    background: #f1f5f9;
-}
-
-.sign-preview-body iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
 
 .sign-empty-file {
     display: flex;
@@ -3720,9 +3648,6 @@
         order: -1;
     }
 
-    .sign-preview-body {
-        height: 520px;
-    }
 
 }
 
@@ -3757,9 +3682,6 @@
         grid-column: auto;
     }
 
-    .sign-preview-body {
-        height: 420px;
-    }
 
 }
 
@@ -3814,9 +3736,6 @@
         display: block;
     }
 
-    .sign-preview-body {
-        height: 700px;
-    }
 
 }
 
